@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+  <table-filter match-catalog="RMS" match-name="BANGLUONG"/>
+  <table-filter match-catalog="RMS" match-name="CALAMVIEC"/>
+  <table-filter match-catalog="RMS" match-name="NGUOIDUNG"/>
+  <table-filter match-catalog="RMS" match-name="THOIGIANCOTHELAMVIEC"/>
+  <table-filter match-catalog="RMS" match-name="TRINHDO"/>
+  <table-filter match-catalog="RMS" match-name="VITRI"/>
+</hibernate-reverse-engineering>
