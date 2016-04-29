@@ -1,6 +1,7 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,28 +17,28 @@ import javax.persistence.TemporalType;
 @Table(name = "TRINHDO", catalog = "RMS")
 public class Trinhdo implements java.io.Serializable {
 
-	private byte[] maTrinhDo;
-	private byte[] createdBy;
-	private Date createdDate;
-	private byte[] dienGiai;
+	private Serializable maTrinhDo;
 	private int id;
+	private Serializable tenTrinhDo;
+	private Serializable dienGiai;
 	private boolean status;
-	private byte[] tenTrinhDo;
-	private byte[] updatedBy;
+	private Serializable createdBy;
+	private Date createdDate;
+	private Serializable updatedBy;
 	private Date updatedDate;
 
 	public Trinhdo() {
 	}
 
-	public Trinhdo(byte[] maTrinhDo, byte[] createdBy, Date createdDate, byte[] dienGiai, int id, boolean status,
-			byte[] tenTrinhDo, byte[] updatedBy, Date updatedDate) {
+	public Trinhdo(Serializable maTrinhDo, int id, Serializable tenTrinhDo, Serializable dienGiai, boolean status,
+			Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
 		this.maTrinhDo = maTrinhDo;
+		this.id = id;
+		this.tenTrinhDo = tenTrinhDo;
+		this.dienGiai = dienGiai;
+		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
-		this.dienGiai = dienGiai;
-		this.id = id;
-		this.status = status;
-		this.tenTrinhDo = tenTrinhDo;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
 	}
@@ -45,20 +46,56 @@ public class Trinhdo implements java.io.Serializable {
 	@Id
 
 	@Column(name = "MaTrinhDo", unique = true, nullable = false)
-	public byte[] getMaTrinhDo() {
+	public Serializable getMaTrinhDo() {
 		return this.maTrinhDo;
 	}
 
-	public void setMaTrinhDo(byte[] maTrinhDo) {
+	public void setMaTrinhDo(Serializable maTrinhDo) {
 		this.maTrinhDo = maTrinhDo;
 	}
 
+	@Column(name = "ID", nullable = false)
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@Column(name = "TenTrinhDo", nullable = false)
+	public Serializable getTenTrinhDo() {
+		return this.tenTrinhDo;
+	}
+
+	public void setTenTrinhDo(Serializable tenTrinhDo) {
+		this.tenTrinhDo = tenTrinhDo;
+	}
+
+	@Column(name = "DienGiai", nullable = false)
+	public Serializable getDienGiai() {
+		return this.dienGiai;
+	}
+
+	public void setDienGiai(Serializable dienGiai) {
+		this.dienGiai = dienGiai;
+	}
+
+	@Column(name = "Status", nullable = false)
+	public boolean isStatus() {
+		return this.status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 	@Column(name = "CreatedBy", nullable = false)
-	public byte[] getCreatedBy() {
+	public Serializable getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(byte[] createdBy) {
+	public void setCreatedBy(Serializable createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -72,48 +109,12 @@ public class Trinhdo implements java.io.Serializable {
 		this.createdDate = createdDate;
 	}
 
-	@Column(name = "DienGiai", nullable = false)
-	public byte[] getDienGiai() {
-		return this.dienGiai;
-	}
-
-	public void setDienGiai(byte[] dienGiai) {
-		this.dienGiai = dienGiai;
-	}
-
-	@Column(name = "ID", nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
-		return this.status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	@Column(name = "TenTrinhDo", nullable = false)
-	public byte[] getTenTrinhDo() {
-		return this.tenTrinhDo;
-	}
-
-	public void setTenTrinhDo(byte[] tenTrinhDo) {
-		this.tenTrinhDo = tenTrinhDo;
-	}
-
 	@Column(name = "UpdatedBy", nullable = false)
-	public byte[] getUpdatedBy() {
+	public Serializable getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(byte[] updatedBy) {
+	public void setUpdatedBy(Serializable updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

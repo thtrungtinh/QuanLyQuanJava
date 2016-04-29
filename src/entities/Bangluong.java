@@ -1,5 +1,5 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -26,16 +26,15 @@ public class Bangluong implements java.io.Serializable {
 
 	@EmbeddedId
 
-	@AttributeOverrides({
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "ID", nullable = false)),
+			@AttributeOverride(name = "maLuong", column = @Column(name = "MaLuong", nullable = false)),
+			@AttributeOverride(name = "maCa", column = @Column(name = "MaCa", nullable = false)),
+			@AttributeOverride(name = "maViTri", column = @Column(name = "MaViTri", nullable = false)),
+			@AttributeOverride(name = "dienGiai", column = @Column(name = "DienGiai", nullable = false)),
+			@AttributeOverride(name = "tienLuongNgay", column = @Column(name = "TienLuongNgay", nullable = false, scale = 4)),
+			@AttributeOverride(name = "status", column = @Column(name = "Status", nullable = false)),
 			@AttributeOverride(name = "createdBy", column = @Column(name = "CreatedBy", nullable = false)),
 			@AttributeOverride(name = "createdDate", column = @Column(name = "CreatedDate", nullable = false, length = 23)),
-			@AttributeOverride(name = "dienGiai", column = @Column(name = "DienGiai", nullable = false)),
-			@AttributeOverride(name = "id", column = @Column(name = "ID", nullable = false)),
-			@AttributeOverride(name = "maCa", column = @Column(name = "MaCa", nullable = false)),
-			@AttributeOverride(name = "maLuong", column = @Column(name = "MaLuong", nullable = false)),
-			@AttributeOverride(name = "maViTri", column = @Column(name = "MaViTri", nullable = false)),
-			@AttributeOverride(name = "status", column = @Column(name = "Status", nullable = false)),
-			@AttributeOverride(name = "tienLuongNgay", column = @Column(name = "TienLuongNgay", nullable = false)),
 			@AttributeOverride(name = "updatedBy", column = @Column(name = "UpdatedBy", nullable = false)),
 			@AttributeOverride(name = "updatedDate", column = @Column(name = "UpdatedDate", nullable = false, length = 23)) })
 	public BangluongId getId() {

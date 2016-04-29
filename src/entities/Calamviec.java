@@ -1,6 +1,7 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,32 +17,32 @@ import javax.persistence.TemporalType;
 @Table(name = "CALAMVIEC", catalog = "RMS")
 public class Calamviec implements java.io.Serializable {
 
-	private byte[] maCa;
-	private byte[] batDau;
-	private byte[] createdBy;
-	private Date createdDate;
-	private byte[] dienGiai;
+	private Serializable maCa;
 	private int id;
-	private byte[] ketThuc;
+	private Serializable tenCa;
+	private Serializable dienGiai;
+	private Date batDau;
+	private Date ketThuc;
 	private boolean status;
-	private byte[] tenCa;
-	private byte[] updatedBy;
+	private Serializable createdBy;
+	private Date createdDate;
+	private Serializable updatedBy;
 	private Date updatedDate;
 
 	public Calamviec() {
 	}
 
-	public Calamviec(byte[] maCa, byte[] batDau, byte[] createdBy, Date createdDate, byte[] dienGiai, int id,
-			byte[] ketThuc, boolean status, byte[] tenCa, byte[] updatedBy, Date updatedDate) {
+	public Calamviec(Serializable maCa, int id, Serializable tenCa, Serializable dienGiai, Date batDau, Date ketThuc,
+			boolean status, Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
 		this.maCa = maCa;
-		this.batDau = batDau;
-		this.createdBy = createdBy;
-		this.createdDate = createdDate;
-		this.dienGiai = dienGiai;
 		this.id = id;
+		this.tenCa = tenCa;
+		this.dienGiai = dienGiai;
+		this.batDau = batDau;
 		this.ketThuc = ketThuc;
 		this.status = status;
-		this.tenCa = tenCa;
+		this.createdBy = createdBy;
+		this.createdDate = createdDate;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
 	}
@@ -49,29 +50,76 @@ public class Calamviec implements java.io.Serializable {
 	@Id
 
 	@Column(name = "MaCa", unique = true, nullable = false)
-	public byte[] getMaCa() {
+	public Serializable getMaCa() {
 		return this.maCa;
 	}
 
-	public void setMaCa(byte[] maCa) {
+	public void setMaCa(Serializable maCa) {
 		this.maCa = maCa;
 	}
 
-	@Column(name = "BatDau", nullable = false)
-	public byte[] getBatDau() {
+	@Column(name = "ID", nullable = false)
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@Column(name = "TenCa", nullable = false)
+	public Serializable getTenCa() {
+		return this.tenCa;
+	}
+
+	public void setTenCa(Serializable tenCa) {
+		this.tenCa = tenCa;
+	}
+
+	@Column(name = "DienGiai", nullable = false)
+	public Serializable getDienGiai() {
+		return this.dienGiai;
+	}
+
+	public void setDienGiai(Serializable dienGiai) {
+		this.dienGiai = dienGiai;
+	}
+
+	@Temporal(TemporalType.TIME)
+	@Column(name = "BatDau", nullable = false, length = 14)
+	public Date getBatDau() {
 		return this.batDau;
 	}
 
-	public void setBatDau(byte[] batDau) {
+	public void setBatDau(Date batDau) {
 		this.batDau = batDau;
 	}
 
+	@Temporal(TemporalType.TIME)
+	@Column(name = "KetThuc", nullable = false, length = 14)
+	public Date getKetThuc() {
+		return this.ketThuc;
+	}
+
+	public void setKetThuc(Date ketThuc) {
+		this.ketThuc = ketThuc;
+	}
+
+	@Column(name = "Status", nullable = false)
+	public boolean isStatus() {
+		return this.status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 	@Column(name = "CreatedBy", nullable = false)
-	public byte[] getCreatedBy() {
+	public Serializable getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(byte[] createdBy) {
+	public void setCreatedBy(Serializable createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -85,57 +133,12 @@ public class Calamviec implements java.io.Serializable {
 		this.createdDate = createdDate;
 	}
 
-	@Column(name = "DienGiai", nullable = false)
-	public byte[] getDienGiai() {
-		return this.dienGiai;
-	}
-
-	public void setDienGiai(byte[] dienGiai) {
-		this.dienGiai = dienGiai;
-	}
-
-	@Column(name = "ID", nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Column(name = "KetThuc", nullable = false)
-	public byte[] getKetThuc() {
-		return this.ketThuc;
-	}
-
-	public void setKetThuc(byte[] ketThuc) {
-		this.ketThuc = ketThuc;
-	}
-
-	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
-		return this.status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	@Column(name = "TenCa", nullable = false)
-	public byte[] getTenCa() {
-		return this.tenCa;
-	}
-
-	public void setTenCa(byte[] tenCa) {
-		this.tenCa = tenCa;
-	}
-
 	@Column(name = "UpdatedBy", nullable = false)
-	public byte[] getUpdatedBy() {
+	public Serializable getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(byte[] updatedBy) {
+	public void setUpdatedBy(Serializable updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

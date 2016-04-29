@@ -1,7 +1,7 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.util.Arrays;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -11,32 +11,32 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class ThoigiancothelamviecId implements java.io.Serializable {
 
-	private byte[] maCa;
-	private byte[] maNguoiDung;
+	private Serializable maCa;
+	private Serializable maNguoiDung;
 
 	public ThoigiancothelamviecId() {
 	}
 
-	public ThoigiancothelamviecId(byte[] maCa, byte[] maNguoiDung) {
+	public ThoigiancothelamviecId(Serializable maCa, Serializable maNguoiDung) {
 		this.maCa = maCa;
 		this.maNguoiDung = maNguoiDung;
 	}
 
 	@Column(name = "MaCa", nullable = false)
-	public byte[] getMaCa() {
+	public Serializable getMaCa() {
 		return this.maCa;
 	}
 
-	public void setMaCa(byte[] maCa) {
+	public void setMaCa(Serializable maCa) {
 		this.maCa = maCa;
 	}
 
 	@Column(name = "MaNguoiDung", nullable = false)
-	public byte[] getMaNguoiDung() {
+	public Serializable getMaNguoiDung() {
 		return this.maNguoiDung;
 	}
 
-	public void setMaNguoiDung(byte[] maNguoiDung) {
+	public void setMaNguoiDung(Serializable maNguoiDung) {
 		this.maNguoiDung = maNguoiDung;
 	}
 
@@ -50,17 +50,17 @@ public class ThoigiancothelamviecId implements java.io.Serializable {
 		ThoigiancothelamviecId castOther = (ThoigiancothelamviecId) other;
 
 		return ((this.getMaCa() == castOther.getMaCa()) || (this.getMaCa() != null && castOther.getMaCa() != null
-				&& Arrays.equals(this.getMaCa(), castOther.getMaCa())))
+				&& this.getMaCa().equals(castOther.getMaCa())))
 				&& ((this.getMaNguoiDung() == castOther.getMaNguoiDung())
 						|| (this.getMaNguoiDung() != null && castOther.getMaNguoiDung() != null
-								&& Arrays.equals(this.getMaNguoiDung(), castOther.getMaNguoiDung())));
+								&& this.getMaNguoiDung().equals(castOther.getMaNguoiDung())));
 	}
 
 	public int hashCode() {
 		int result = 17;
 
-		result = 37 * result + (getMaCa() == null ? 0 : Arrays.hashCode(this.getMaCa()));
-		result = 37 * result + (getMaNguoiDung() == null ? 0 : Arrays.hashCode(this.getMaNguoiDung()));
+		result = 37 * result + (getMaCa() == null ? 0 : this.getMaCa().hashCode());
+		result = 37 * result + (getMaNguoiDung() == null ? 0 : this.getMaNguoiDung().hashCode());
 		return result;
 	}
 

@@ -1,8 +1,8 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,42 +13,106 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class BangluongId implements java.io.Serializable {
 
-	private byte[] createdBy;
-	private Date createdDate;
-	private byte[] dienGiai;
 	private int id;
-	private byte[] maCa;
-	private byte[] maLuong;
-	private byte[] maViTri;
-	private boolean status;
+	private Serializable maLuong;
+	private Serializable maCa;
+	private Serializable maViTri;
+	private Serializable dienGiai;
 	private BigDecimal tienLuongNgay;
-	private byte[] updatedBy;
+	private boolean status;
+	private Serializable createdBy;
+	private Date createdDate;
+	private Serializable updatedBy;
 	private Date updatedDate;
 
 	public BangluongId() {
 	}
 
-	public BangluongId(byte[] createdBy, Date createdDate, byte[] dienGiai, int id, byte[] maCa, byte[] maLuong,
-			byte[] maViTri, boolean status, BigDecimal tienLuongNgay, byte[] updatedBy, Date updatedDate) {
+	public BangluongId(int id, Serializable maLuong, Serializable maCa, Serializable maViTri, Serializable dienGiai,
+			BigDecimal tienLuongNgay, boolean status, Serializable createdBy, Date createdDate, Serializable updatedBy,
+			Date updatedDate) {
+		this.id = id;
+		this.maLuong = maLuong;
+		this.maCa = maCa;
+		this.maViTri = maViTri;
+		this.dienGiai = dienGiai;
+		this.tienLuongNgay = tienLuongNgay;
+		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
-		this.dienGiai = dienGiai;
-		this.id = id;
-		this.maCa = maCa;
-		this.maLuong = maLuong;
-		this.maViTri = maViTri;
-		this.status = status;
-		this.tienLuongNgay = tienLuongNgay;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
 	}
 
+	@Column(name = "ID", nullable = false)
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@Column(name = "MaLuong", nullable = false)
+	public Serializable getMaLuong() {
+		return this.maLuong;
+	}
+
+	public void setMaLuong(Serializable maLuong) {
+		this.maLuong = maLuong;
+	}
+
+	@Column(name = "MaCa", nullable = false)
+	public Serializable getMaCa() {
+		return this.maCa;
+	}
+
+	public void setMaCa(Serializable maCa) {
+		this.maCa = maCa;
+	}
+
+	@Column(name = "MaViTri", nullable = false)
+	public Serializable getMaViTri() {
+		return this.maViTri;
+	}
+
+	public void setMaViTri(Serializable maViTri) {
+		this.maViTri = maViTri;
+	}
+
+	@Column(name = "DienGiai", nullable = false)
+	public Serializable getDienGiai() {
+		return this.dienGiai;
+	}
+
+	public void setDienGiai(Serializable dienGiai) {
+		this.dienGiai = dienGiai;
+	}
+
+	@Column(name = "TienLuongNgay", nullable = false, scale = 4)
+	public BigDecimal getTienLuongNgay() {
+		return this.tienLuongNgay;
+	}
+
+	public void setTienLuongNgay(BigDecimal tienLuongNgay) {
+		this.tienLuongNgay = tienLuongNgay;
+	}
+
+	@Column(name = "Status", nullable = false)
+	public boolean isStatus() {
+		return this.status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 	@Column(name = "CreatedBy", nullable = false)
-	public byte[] getCreatedBy() {
+	public Serializable getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(byte[] createdBy) {
+	public void setCreatedBy(Serializable createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -61,75 +125,12 @@ public class BangluongId implements java.io.Serializable {
 		this.createdDate = createdDate;
 	}
 
-	@Column(name = "DienGiai", nullable = false)
-	public byte[] getDienGiai() {
-		return this.dienGiai;
-	}
-
-	public void setDienGiai(byte[] dienGiai) {
-		this.dienGiai = dienGiai;
-	}
-
-	@Column(name = "ID", nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Column(name = "MaCa", nullable = false)
-	public byte[] getMaCa() {
-		return this.maCa;
-	}
-
-	public void setMaCa(byte[] maCa) {
-		this.maCa = maCa;
-	}
-
-	@Column(name = "MaLuong", nullable = false)
-	public byte[] getMaLuong() {
-		return this.maLuong;
-	}
-
-	public void setMaLuong(byte[] maLuong) {
-		this.maLuong = maLuong;
-	}
-
-	@Column(name = "MaViTri", nullable = false)
-	public byte[] getMaViTri() {
-		return this.maViTri;
-	}
-
-	public void setMaViTri(byte[] maViTri) {
-		this.maViTri = maViTri;
-	}
-
-	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
-		return this.status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	@Column(name = "TienLuongNgay", nullable = false)
-	public BigDecimal getTienLuongNgay() {
-		return this.tienLuongNgay;
-	}
-
-	public void setTienLuongNgay(BigDecimal tienLuongNgay) {
-		this.tienLuongNgay = tienLuongNgay;
-	}
-
 	@Column(name = "UpdatedBy", nullable = false)
-	public byte[] getUpdatedBy() {
+	public Serializable getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(byte[] updatedBy) {
+	public void setUpdatedBy(Serializable updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -151,28 +152,26 @@ public class BangluongId implements java.io.Serializable {
 			return false;
 		BangluongId castOther = (BangluongId) other;
 
-		return ((this.getCreatedBy() == castOther.getCreatedBy()) || (this.getCreatedBy() != null
-				&& castOther.getCreatedBy() != null && Arrays.equals(this.getCreatedBy(), castOther.getCreatedBy())))
-				&& ((this.getCreatedDate() == castOther.getCreatedDate())
-						|| (this.getCreatedDate() != null && castOther.getCreatedDate() != null
-								&& this.getCreatedDate().equals(castOther.getCreatedDate())))
-				&& ((this.getDienGiai() == castOther.getDienGiai())
-						|| (this.getDienGiai() != null && castOther.getDienGiai() != null
-								&& Arrays.equals(this.getDienGiai(), castOther.getDienGiai())))
-				&& (this.getId() == castOther.getId())
-				&& ((this.getMaCa() == castOther.getMaCa()) || (this.getMaCa() != null && castOther.getMaCa() != null
-						&& Arrays.equals(this.getMaCa(), castOther.getMaCa())))
+		return (this.getId() == castOther.getId())
 				&& ((this.getMaLuong() == castOther.getMaLuong()) || (this.getMaLuong() != null
-						&& castOther.getMaLuong() != null && Arrays.equals(this.getMaLuong(), castOther.getMaLuong())))
+						&& castOther.getMaLuong() != null && this.getMaLuong().equals(castOther.getMaLuong())))
+				&& ((this.getMaCa() == castOther.getMaCa()) || (this.getMaCa() != null && castOther.getMaCa() != null
+						&& this.getMaCa().equals(castOther.getMaCa())))
 				&& ((this.getMaViTri() == castOther.getMaViTri()) || (this.getMaViTri() != null
-						&& castOther.getMaViTri() != null && Arrays.equals(this.getMaViTri(), castOther.getMaViTri())))
-				&& (this.isStatus() == castOther.isStatus())
+						&& castOther.getMaViTri() != null && this.getMaViTri().equals(castOther.getMaViTri())))
+				&& ((this.getDienGiai() == castOther.getDienGiai()) || (this.getDienGiai() != null
+						&& castOther.getDienGiai() != null && this.getDienGiai().equals(castOther.getDienGiai())))
 				&& ((this.getTienLuongNgay() == castOther.getTienLuongNgay())
 						|| (this.getTienLuongNgay() != null && castOther.getTienLuongNgay() != null
 								&& this.getTienLuongNgay().equals(castOther.getTienLuongNgay())))
-				&& ((this.getUpdatedBy() == castOther.getUpdatedBy())
-						|| (this.getUpdatedBy() != null && castOther.getUpdatedBy() != null
-								&& Arrays.equals(this.getUpdatedBy(), castOther.getUpdatedBy())))
+				&& (this.isStatus() == castOther.isStatus())
+				&& ((this.getCreatedBy() == castOther.getCreatedBy()) || (this.getCreatedBy() != null
+						&& castOther.getCreatedBy() != null && this.getCreatedBy().equals(castOther.getCreatedBy())))
+				&& ((this.getCreatedDate() == castOther.getCreatedDate())
+						|| (this.getCreatedDate() != null && castOther.getCreatedDate() != null
+								&& this.getCreatedDate().equals(castOther.getCreatedDate())))
+				&& ((this.getUpdatedBy() == castOther.getUpdatedBy()) || (this.getUpdatedBy() != null
+						&& castOther.getUpdatedBy() != null && this.getUpdatedBy().equals(castOther.getUpdatedBy())))
 				&& ((this.getUpdatedDate() == castOther.getUpdatedDate())
 						|| (this.getUpdatedDate() != null && castOther.getUpdatedDate() != null
 								&& this.getUpdatedDate().equals(castOther.getUpdatedDate())));
@@ -181,16 +180,16 @@ public class BangluongId implements java.io.Serializable {
 	public int hashCode() {
 		int result = 17;
 
-		result = 37 * result + (getCreatedBy() == null ? 0 : Arrays.hashCode(this.getCreatedBy()));
-		result = 37 * result + (getCreatedDate() == null ? 0 : this.getCreatedDate().hashCode());
-		result = 37 * result + (getDienGiai() == null ? 0 : Arrays.hashCode(this.getDienGiai()));
 		result = 37 * result + this.getId();
-		result = 37 * result + (getMaCa() == null ? 0 : Arrays.hashCode(this.getMaCa()));
-		result = 37 * result + (getMaLuong() == null ? 0 : Arrays.hashCode(this.getMaLuong()));
-		result = 37 * result + (getMaViTri() == null ? 0 : Arrays.hashCode(this.getMaViTri()));
-		result = 37 * result + (this.isStatus() ? 1 : 0);
+		result = 37 * result + (getMaLuong() == null ? 0 : this.getMaLuong().hashCode());
+		result = 37 * result + (getMaCa() == null ? 0 : this.getMaCa().hashCode());
+		result = 37 * result + (getMaViTri() == null ? 0 : this.getMaViTri().hashCode());
+		result = 37 * result + (getDienGiai() == null ? 0 : this.getDienGiai().hashCode());
 		result = 37 * result + (getTienLuongNgay() == null ? 0 : this.getTienLuongNgay().hashCode());
-		result = 37 * result + (getUpdatedBy() == null ? 0 : Arrays.hashCode(this.getUpdatedBy()));
+		result = 37 * result + (this.isStatus() ? 1 : 0);
+		result = 37 * result + (getCreatedBy() == null ? 0 : this.getCreatedBy().hashCode());
+		result = 37 * result + (getCreatedDate() == null ? 0 : this.getCreatedDate().hashCode());
+		result = 37 * result + (getUpdatedBy() == null ? 0 : this.getUpdatedBy().hashCode());
 		result = 37 * result + (getUpdatedDate() == null ? 0 : this.getUpdatedDate().hashCode());
 		return result;
 	}

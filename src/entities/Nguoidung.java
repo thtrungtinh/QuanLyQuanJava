@@ -1,7 +1,7 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,43 +18,43 @@ import javax.persistence.TemporalType;
 public class Nguoidung implements java.io.Serializable {
 
 	private String maNguoiDung;
+	private String matKhau;
+	private String tenNguoiDung;
+	private String dienGiai;
+	private boolean gioiTinh;
+	private Date ngaySinh;
+	private String dienThoai;
+	private String diaChi;
 	private String cmnd;
+	private String maViTri;
+	private String maTrinhDo;
+	private boolean status;
 	private String createdBy;
 	private Date createdDate;
-	private String diaChi;
-	private String dienGiai;
-	private String dienThoai;
-	private boolean gioiTinh;
-	private String maTrinhDo;
-	private String maViTri;
-	private String matKhau;
-	private Date ngaySinh;
-	private boolean status;
-	private String tenNguoiDung;
 	private String updatedBy;
 	private Date updatedDate;
 
 	public Nguoidung() {
 	}
 
-	public Nguoidung(String maNguoiDung, String cmnd, String createdBy, Date createdDate,
-			String diaChi, String dienGiai, String dienThoai, boolean gioiTinh,
-			String maTrinhDo, String maViTri, String matKhau, Date ngaySinh, boolean status,
-			String tenNguoiDung, String updatedBy, Date updatedDate) {
+	public Nguoidung(String maNguoiDung, String matKhau, String tenNguoiDung, String dienGiai,
+			boolean gioiTinh, Date ngaySinh, String dienThoai, String diaChi, String cmnd,
+			String maViTri, String maTrinhDo, boolean status, String createdBy, Date createdDate,
+			String updatedBy, Date updatedDate) {
 		this.maNguoiDung = maNguoiDung;
+		this.matKhau = matKhau;
+		this.tenNguoiDung = tenNguoiDung;
+		this.dienGiai = dienGiai;
+		this.gioiTinh = gioiTinh;
+		this.ngaySinh = ngaySinh;
+		this.dienThoai = dienThoai;
+		this.diaChi = diaChi;
 		this.cmnd = cmnd;
+		this.maViTri = maViTri;
+		this.maTrinhDo = maTrinhDo;
+		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
-		this.diaChi = diaChi;
-		this.dienGiai = dienGiai;
-		this.dienThoai = dienThoai;
-		this.gioiTinh = gioiTinh;
-		this.maTrinhDo = maTrinhDo;
-		this.maViTri = maViTri;
-		this.matKhau = matKhau;
-		this.ngaySinh = ngaySinh;
-		this.status = status;
-		this.tenNguoiDung = tenNguoiDung;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
 	}
@@ -70,6 +70,70 @@ public class Nguoidung implements java.io.Serializable {
 		this.maNguoiDung = maNguoiDung;
 	}
 
+	@Column(name = "MatKhau", nullable = false)
+	public String getMatKhau() {
+		return this.matKhau;
+	}
+
+	public void setMatKhau(String matKhau) {
+		this.matKhau = matKhau;
+	}
+
+	@Column(name = "TenNguoiDung", nullable = false)
+	public String getTenNguoiDung() {
+		return this.tenNguoiDung;
+	}
+
+	public void setTenNguoiDung(String tenNguoiDung) {
+		this.tenNguoiDung = tenNguoiDung;
+	}
+
+	@Column(name = "DienGiai", nullable = false)
+	public String getDienGiai() {
+		return this.dienGiai;
+	}
+
+	public void setDienGiai(String dienGiai) {
+		this.dienGiai = dienGiai;
+	}
+
+	@Column(name = "GioiTinh", nullable = false)
+	public boolean isGioiTinh() {
+		return this.gioiTinh;
+	}
+
+	public void setGioiTinh(boolean gioiTinh) {
+		this.gioiTinh = gioiTinh;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "NgaySinh", nullable = false, length = 23)
+	public Date getNgaySinh() {
+		return this.ngaySinh;
+	}
+
+	public void setNgaySinh(Date ngaySinh) {
+		this.ngaySinh = ngaySinh;
+	}
+
+	@Column(name = "DienThoai", nullable = false)
+	public String getDienThoai() {
+		return this.dienThoai;
+	}
+
+	public void setDienThoai(String dienThoai) {
+		this.dienThoai = dienThoai;
+	}
+
+	@Column(name = "DiaChi", nullable = false)
+	public String getDiaChi() {
+		return this.diaChi;
+	}
+
+	public void setDiaChi(String diaChi) {
+		this.diaChi = diaChi;
+	}
+
 	@Column(name = "CMND", nullable = false)
 	public String getCmnd() {
 		return this.cmnd;
@@ -77,6 +141,33 @@ public class Nguoidung implements java.io.Serializable {
 
 	public void setCmnd(String cmnd) {
 		this.cmnd = cmnd;
+	}
+
+	@Column(name = "MaViTri", nullable = false)
+	public String getMaViTri() {
+		return this.maViTri;
+	}
+
+	public void setMaViTri(String maViTri) {
+		this.maViTri = maViTri;
+	}
+
+	@Column(name = "MaTrinhDo", nullable = false)
+	public String getMaTrinhDo() {
+		return this.maTrinhDo;
+	}
+
+	public void setMaTrinhDo(String maTrinhDo) {
+		this.maTrinhDo = maTrinhDo;
+	}
+
+	@Column(name = "Status", nullable = false)
+	public boolean isStatus() {
+		return this.status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
 	@Column(name = "CreatedBy", nullable = false)
@@ -96,97 +187,6 @@ public class Nguoidung implements java.io.Serializable {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
-	}
-
-	@Column(name = "DiaChi", nullable = false)
-	public String getDiaChi() {
-		return this.diaChi;
-	}
-
-	public void setDiaChi(String diaChi) {
-		this.diaChi = diaChi;
-	}
-
-	@Column(name = "DienGiai", nullable = false)
-	public String getDienGiai() {
-		return this.dienGiai;
-	}
-
-	public void setDienGiai(String dienGiai) {
-		this.dienGiai = dienGiai;
-	}
-
-	@Column(name = "DienThoai", nullable = false)
-	public String getDienThoai() {
-		return this.dienThoai;
-	}
-
-	public void setDienThoai(String dienThoai) {
-		this.dienThoai = dienThoai;
-	}
-
-	@Column(name = "GioiTinh", nullable = false)
-	public boolean isGioiTinh() {
-		return this.gioiTinh;
-	}
-
-	public void setGioiTinh(boolean gioiTinh) {
-		this.gioiTinh = gioiTinh;
-	}
-
-	@Column(name = "MaTrinhDo", nullable = false)
-	public String getMaTrinhDo() {
-		return this.maTrinhDo;
-	}
-
-	public void setMaTrinhDo(String maTrinhDo) {
-		this.maTrinhDo = maTrinhDo;
-	}
-
-	@Column(name = "MaViTri", nullable = false)
-	public String getMaViTri() {
-		return this.maViTri;
-	}
-
-	public void setMaViTri(String maViTri) {
-		this.maViTri = maViTri;
-	}
-
-	@Column(name = "MatKhau", nullable = false)
-	public String getMatKhau() {
-		return this.matKhau;
-	}
-
-	public void setMatKhau(String matKhau) {
-		this.matKhau = matKhau;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "NgaySinh", nullable = false, length = 23)
-	public Date getNgaySinh() {
-		return this.ngaySinh;
-	}
-
-	public void setNgaySinh(Date ngaySinh) {
-		this.ngaySinh = ngaySinh;
-	}
-
-	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
-		return this.status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	@Column(name = "TenNguoiDung", nullable = false)
-	public String getTenNguoiDung() {
-		return this.tenNguoiDung;
-	}
-
-	public void setTenNguoiDung(String tenNguoiDung) {
-		this.tenNguoiDung = tenNguoiDung;
 	}
 
 	@Column(name = "UpdatedBy", nullable = false)

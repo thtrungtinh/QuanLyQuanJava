@@ -6,11 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
+
 import java.awt.GridLayout;
-import com.jgoodies.forms.layout.FormSpecs;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -38,7 +36,7 @@ public class fLogin extends JFrame {
 			public void run() {
 				try {
 					fLogin frame = new fLogin();
-					frame.setVisible(true);
+					frame.setVisible(true);					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -78,18 +76,18 @@ public class fLogin extends JFrame {
 		JButton btnLogin = new JButton("Đăng nhập");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String maNguoiDung = txtMaNguoiDung.getText();		
 				NguoiDungDAO nguoiDungDAO  = new NguoiDungDAO();
-				boolean  isLogin = false;
-				isLogin = nguoiDungDAO.GetListID(txtMaNguoiDung.getText(), new String(txtMatKhau.getPassword()));
-				if(isLogin)
-				{
-					
-					//JOptionPane.showMessageDialog(null, "Đăng nhập thành công !");
+				
+				Nguoidung entity = nguoiDungDAO.GetListID(maNguoiDung, new String(txtMatKhau.getPassword()));
+				if(entity != null)
+				{								
 					fMain view = new fMain();
-					view.LoadTitle(txtMaNguoiDung.getText());
+					view.LoadTitle(entity.getTenNguoiDung());
+					view.SetUser(maNguoiDung);
 					view.setVisible(true);
 					setVisible(false);
-					System.out.println("Đăng nhập thành công !" + txtMaNguoiDung.getText());
+					System.out.println("Đăng nhập thành công !" + maNguoiDung);
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không đúng !");

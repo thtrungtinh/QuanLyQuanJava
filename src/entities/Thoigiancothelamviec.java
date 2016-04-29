@@ -1,6 +1,7 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -19,25 +20,25 @@ import javax.persistence.TemporalType;
 public class Thoigiancothelamviec implements java.io.Serializable {
 
 	private ThoigiancothelamviecId id;
-	private byte[] createdBy;
-	private Date createdDate;
-	private byte[] dienGiai;
 	private int id_1;
+	private Serializable dienGiai;
 	private boolean status;
-	private byte[] updatedBy;
+	private Serializable createdBy;
+	private Date createdDate;
+	private Serializable updatedBy;
 	private Date updatedDate;
 
 	public Thoigiancothelamviec() {
 	}
 
-	public Thoigiancothelamviec(ThoigiancothelamviecId id, byte[] createdBy, Date createdDate, byte[] dienGiai,
-			int id_1, boolean status, byte[] updatedBy, Date updatedDate) {
+	public Thoigiancothelamviec(ThoigiancothelamviecId id, int id_1, Serializable dienGiai, boolean status,
+			Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
 		this.id = id;
+		this.id_1 = id_1;
+		this.dienGiai = dienGiai;
+		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
-		this.dienGiai = dienGiai;
-		this.id_1 = id_1;
-		this.status = status;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
 	}
@@ -54,12 +55,39 @@ public class Thoigiancothelamviec implements java.io.Serializable {
 		this.id = id;
 	}
 
+	@Column(name = "ID", nullable = false)
+	public int getId_1() {
+		return this.id_1;
+	}
+
+	public void setId_1(int id_1) {
+		this.id_1 = id_1;
+	}
+
+	@Column(name = "DienGiai", nullable = false)
+	public Serializable getDienGiai() {
+		return this.dienGiai;
+	}
+
+	public void setDienGiai(Serializable dienGiai) {
+		this.dienGiai = dienGiai;
+	}
+
+	@Column(name = "Status", nullable = false)
+	public boolean isStatus() {
+		return this.status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 	@Column(name = "CreatedBy", nullable = false)
-	public byte[] getCreatedBy() {
+	public Serializable getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(byte[] createdBy) {
+	public void setCreatedBy(Serializable createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -73,39 +101,12 @@ public class Thoigiancothelamviec implements java.io.Serializable {
 		this.createdDate = createdDate;
 	}
 
-	@Column(name = "DienGiai", nullable = false)
-	public byte[] getDienGiai() {
-		return this.dienGiai;
-	}
-
-	public void setDienGiai(byte[] dienGiai) {
-		this.dienGiai = dienGiai;
-	}
-
-	@Column(name = "ID", nullable = false)
-	public int getId_1() {
-		return this.id_1;
-	}
-
-	public void setId_1(int id_1) {
-		this.id_1 = id_1;
-	}
-
-	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
-		return this.status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
 	@Column(name = "UpdatedBy", nullable = false)
-	public byte[] getUpdatedBy() {
+	public Serializable getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(byte[] updatedBy) {
+	public void setUpdatedBy(Serializable updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

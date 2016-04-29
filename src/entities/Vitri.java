@@ -1,6 +1,7 @@
 package entities;
-// Generated Apr 28, 2016 7:02:44 PM by Hibernate Tools 3.4.0.CR1
+// Generated Apr 29, 2016 4:28:59 PM by Hibernate Tools 5.1.0.Alpha1
 
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,28 +17,26 @@ import javax.persistence.TemporalType;
 @Table(name = "VITRI", catalog = "RMS")
 public class Vitri implements java.io.Serializable {
 
-	private byte[] maViTri;
-	private byte[] createdBy;
-	private Date createdDate;
-	private byte[] dienGiai;
-	private int id;
+	private String maViTri;
+	private String tenViTri;
+	private String dienGiai;
 	private boolean status;
-	private byte[] tenViTri;
-	private byte[] updatedBy;
+	private String createdBy;
+	private Date createdDate;
+	private String updatedBy;
 	private Date updatedDate;
 
 	public Vitri() {
 	}
 
-	public Vitri(byte[] maViTri, byte[] createdBy, Date createdDate, byte[] dienGiai, int id, boolean status,
-			byte[] tenViTri, byte[] updatedBy, Date updatedDate) {
+	public Vitri(String maViTri, String tenViTri, String dienGiai, boolean status,
+			String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
 		this.maViTri = maViTri;
+		this.tenViTri = tenViTri;
+		this.dienGiai = dienGiai;
+		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
-		this.dienGiai = dienGiai;
-		this.id = id;
-		this.status = status;
-		this.tenViTri = tenViTri;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
 	}
@@ -45,20 +44,47 @@ public class Vitri implements java.io.Serializable {
 	@Id
 
 	@Column(name = "MaViTri", unique = true, nullable = false)
-	public byte[] getMaViTri() {
+	public String getMaViTri() {
 		return this.maViTri;
 	}
 
-	public void setMaViTri(byte[] maViTri) {
+	public void setMaViTri(String maViTri) {
 		this.maViTri = maViTri;
 	}
 
+	@Column(name = "TenViTri", nullable = false)
+	public String getTenViTri() {
+		return this.tenViTri;
+	}
+
+	public void setTenViTri(String tenViTri) {
+		this.tenViTri = tenViTri;
+	}
+
+	@Column(name = "DienGiai", nullable = false)
+	public String getDienGiai() {
+		return this.dienGiai;
+	}
+
+	public void setDienGiai(String dienGiai) {
+		this.dienGiai = dienGiai;
+	}
+
+	@Column(name = "Status", nullable = false)
+	public boolean isStatus() {
+		return this.status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 	@Column(name = "CreatedBy", nullable = false)
-	public byte[] getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(byte[] createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -72,48 +98,12 @@ public class Vitri implements java.io.Serializable {
 		this.createdDate = createdDate;
 	}
 
-	@Column(name = "DienGiai", nullable = false)
-	public byte[] getDienGiai() {
-		return this.dienGiai;
-	}
-
-	public void setDienGiai(byte[] dienGiai) {
-		this.dienGiai = dienGiai;
-	}
-
-	@Column(name = "ID", nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Column(name = "Status", nullable = false)
-	public boolean isStatus() {
-		return this.status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	@Column(name = "TenViTri", nullable = false)
-	public byte[] getTenViTri() {
-		return this.tenViTri;
-	}
-
-	public void setTenViTri(byte[] tenViTri) {
-		this.tenViTri = tenViTri;
-	}
-
 	@Column(name = "UpdatedBy", nullable = false)
-	public byte[] getUpdatedBy() {
+	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(byte[] updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
