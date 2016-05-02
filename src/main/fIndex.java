@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import org.hibernate.*;
 import entities.*;
 import dao.*;
+import java.awt.Insets;
 
 public class fIndex extends JFrame {
 
@@ -33,8 +34,7 @@ public class fIndex extends JFrame {
 	private JTable table;
 	private String maNguoiDung;
 	
-	SessionFactory factory = HibernateUtil.getSessionFactory();	 
-    Session session = factory.getCurrentSession();
+	
     
     public void SetUser( String maNguoiDung)
 	{
@@ -99,7 +99,7 @@ public class fIndex extends JFrame {
 		txtTenViTri.setBounds(78, 60, 159, 20);
 		panel.add(txtTenViTri);
 		
-		JCheckBox chkStatus = new JCheckBox("Sử dụng");
+		final JCheckBox chkStatus = new JCheckBox("Sử dụng");
 		chkStatus.setSelected(true);
 		chkStatus.setBounds(165, 27, 87, 23);
 		panel.add(chkStatus);
@@ -108,32 +108,47 @@ public class fIndex extends JFrame {
 		lblDinGii.setBounds(21, 113, 53, 14);
 		panel.add(lblDinGii);
 		
-		JTextPane txtDienGiai = new JTextPane();
+		final JTextPane txtDienGiai = new JTextPane();
 		txtDienGiai.setBounds(78, 91, 159, 68);
 		panel.add(txtDienGiai);
 		
 		JButton btnThem = new JButton("Thêm");
+		btnThem.setMargin(new Insets(2, 5, 2, 5));
 		btnThem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Vitri vitri = new Vitri();
-				Date currentDate = new Date();
-				try {
-					
-					session.getTransaction().begin();
-					vitri.setMaViTri(txtMaViTri.getText());
-					vitri.setTenViTri(txtTenViTri.getText());
-					vitri.setDienGiai(txtDienGiai.getText());
-					vitri.setStatus(chkStatus.isSelected());
-					vitri.setUpdatedBy(maNguoiDung);
-					vitri.setCreatedBy(maNguoiDung);
-					vitri.setUpdatedDate(currentDate);
-					vitri.setCreatedDate(currentDate);
-					session.save(vitri);
-					session.getTransaction().commit();
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Error: "+ e);
-					session.getTransaction().rollback();
+				SessionFactory factory = HibernateUtil.getSessionFactory();	 
+			    Session session = factory.getCurrentSession();
+				ViTriDAO viTriDAO = new ViTriDAO();
+				String errMessage = viTriDAO.CheckInsert(txtMaViTri.getText());
+				if(errMessage.length()<1)
+				{
+					Vitri vitri = new Vitri();
+					Date currentDate = new Date();
+					try {
+						
+						session.getTransaction().begin();
+						vitri.setMaViTri(txtMaViTri.getText());
+						vitri.setTenViTri(txtTenViTri.getText());
+						vitri.setDienGiai(txtDienGiai.getText());
+						vitri.setStatus(chkStatus.isSelected());
+						vitri.setUpdatedBy(maNguoiDung);
+						vitri.setCreatedBy(maNguoiDung);
+						vitri.setUpdatedDate(currentDate);
+						vitri.setCreatedDate(currentDate);
+						session.save(vitri);
+						session.getTransaction().commit();
+						JOptionPane.showMessageDialog(null, "Thêm mới thành công");
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("Error: "+ e);
+						session.getTransaction().rollback();
+					}
+					finally {
+						
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, errMessage);
 				}
 			}
 		});
