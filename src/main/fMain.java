@@ -35,6 +35,7 @@ private JPanel contentPane;
 			public void run() {
 				try {
 					fMain frame = new fMain();
+					frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -71,8 +72,8 @@ private JPanel contentPane;
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Mở Danh mục vị trí");
 				fIndex view = new fIndex();
-				view.SetUser(maNguoiDung);
-				view.setVisible(true);
+				view.SetUser(maNguoiDung);				
+				view.setVisible(true);				
 			}
 		});
 		mnDanhMc.add(mnItemViTri);

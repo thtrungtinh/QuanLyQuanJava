@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.*;
@@ -9,8 +10,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
-
-import javax.swing.BoxLayout;
+import java.awt.*;
+import java.util.*;
+import javax.swing.text.*;
+import javax.swing.table.*;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -20,19 +25,24 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import org.hibernate.*;
 import entities.*;
 import dao.*;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
 
 public class fIndex extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtMaViTri;
 	private JTextField txtTenViTri;
-	private JTable table;
+	private JTextPane txtDienGiai;
+	private JCheckBox chkStatus;
 	private String maNguoiDung;
+	private DefaultTableModel model;
+	private JTable tblIndex;
 	
 	
     
@@ -40,6 +50,45 @@ public class fIndex extends JFrame {
 	{
 		this.maNguoiDung = maNguoiDung;
 	}
+    
+    public void ShowTableData() {
+    	System.out.println("--- Loading ---");
+    	ViTriDAO vTriDAO = new ViTriDAO();
+    	model = new DefaultTableModel(){
+    		@Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+    	};
+    	
+        //Set Column Title
+    	Vector column = new Vector();
+        column.add("Mã vị trí");
+        column.add("Vị trí");
+        column.add("Diễn Giải");
+        column.add("Sử dụng");
+        model.setColumnIdentifiers(column);
+        List<Vitri> list = vTriDAO.Load();
+        for (int i = 0; i < list.size(); i++) {
+        	Vitri vtri = (Vitri)list.get(i);
+        	Vector row = new Vector();
+            row.add(vtri.getMaViTri());
+            row.add(vtri.getTenViTri());
+            row.add(vtri.getDienGiai());
+            row.add((Boolean)vtri.isStatus());
+            
+            model.addRow(row);
+        }
+        
+        tblIndex.setModel(model);
+        TableColumn tc = tblIndex.getColumnModel().getColumn(3);
+        tc.setCellRenderer( tblIndex.getDefaultRenderer( Boolean.class ) );
+        tc.setCellEditor( tblIndex.getDefaultEditor( Boolean.class ) );
+    	System.out.println("--- Success ---");
+	}
+    
+    
     
 	/**
 	 * Launch the application.
@@ -49,23 +98,27 @@ public class fIndex extends JFrame {
 			public void run() {
 				try {
 					fIndex frame = new fIndex();
-					frame.setVisible(true);
+					frame.setVisible(true);		
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+		
 	}
 
 	/**
 	 * Create the frame.
 	 */
 	public fIndex() {
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				System.out.println("Thoát Danh mục vị trí");
-			}
+			}							
+			
 		});
 		setTitle("V\u1ECB tr\u00ED");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -136,15 +189,16 @@ public class fIndex extends JFrame {
 						vitri.setUpdatedDate(currentDate);
 						vitri.setCreatedDate(currentDate);
 						session.save(vitri);
-						session.getTransaction().commit();
+						session.getTransaction().commit();						
 						JOptionPane.showMessageDialog(null, "Thêm mới thành công");
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.out.println("Error: "+ e);
 						session.getTransaction().rollback();
 					}
 					finally {
-						
+						ShowTableData();
 					}
 				}
 				else {
@@ -169,15 +223,39 @@ public class fIndex extends JFrame {
 		contentPane.add(panel_1);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Ng\u01B0\u1EDDi t\u1EA1o", "S\u1EED d\u1EE5ng", "Di\u1EC5n gi\u1EA3i", "V\u1ECB tr\u00ED", "M\u00E3 v\u1ECB tr\u00ED", "Ng\u00E0y t\u1EA1o"
+		JScrollPane scrollPane = new JScrollPane();
+		panel_1.add(scrollPane, BorderLayout.CENTER);
+		
+		tblIndex = new JTable();
+		tblIndex.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {				
+					if (e.getSource() == tblIndex) {
+			            int iDongDaChon = tblIndex.getSelectedRow();
+			            if (iDongDaChon != -1) {
+			            	
+			                String maViTri = tblIndex.getValueAt(iDongDaChon, 0).toString();
+			                String tenViTri = tblIndex.getValueAt(iDongDaChon, 1).toString();
+			                String dienGiai = tblIndex.getValueAt(iDongDaChon, 2).toString();
+			                Boolean isStatus = (Boolean) tblIndex.getValueAt(iDongDaChon, 3);		            	
+			            	
+			                txtMaViTri.setText(maViTri);
+			                txtTenViTri.setText(tenViTri);
+			                txtDienGiai.setText(dienGiai);
+			                chkStatus.setSelected(isStatus);
+			            }
+			        }
+				} catch (Exception ex) {
+					System.out.println("Error: " + ex);
+				}
 			}
-		));
-		panel_1.add(table, BorderLayout.CENTER);
+		});
+		tblIndex.setPreferredSize(new Dimension(500, 500));
+		scrollPane.setViewportView(tblIndex);
+		
+		
+		ShowTableData();
 		
 	}
 }

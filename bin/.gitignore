@@ -1,3 +1,6 @@
 /dao/
+/entities/
+/hibernate.cfg.xml
+/hibernate.reveng.xml
 /main/
 /properties/

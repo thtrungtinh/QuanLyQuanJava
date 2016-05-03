@@ -13,11 +13,16 @@ public class ViTriDAO {
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	private static SqlConnection connection = new SqlConnection();
 	
+	/**
+     * Load list danh sach vi tri 
+     *
+     * @return List<Vitri>
+     */
 	public List<Vitri> Load() {
 		try {
 			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
 				sessionFactory.getCurrentSession().getTransaction().begin();			 
- 	            return sessionFactory.getCurrentSession().createSQLQuery(" exec VITRI_Load ").addEntity(Vitri.class).list();
+ 	            return  sessionFactory.getCurrentSession().createSQLQuery(" exec VITRI_Load ").addEntity(Vitri.class).list();
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 			return null;
@@ -53,4 +58,28 @@ public class ViTriDAO {
         }
         return errMessage;
     }
+    
+    /**
+     * Xoa vi tri
+     *
+     */
+    public void Delete(String maViTri) {
+
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try {
+        	tx = session.beginTransaction();
+            Vitri vtri = (Vitri) session.get(Vitri.class, maViTri);
+            session.delete(vtri);
+            tx.commit();
+        } catch (HibernateException  e) {
+        	if(tx != null)
+        		tx.rollback();
+            e.printStackTrace();
+            System.out.println("Error: " + e);
+        } finally {            
+            session.close();
+        }
+
+   }
 }
