@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.Date;
 import org.hibernate.*;
 import java.sql.*;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
+
 
 
 
@@ -67,6 +67,33 @@ public class TrinhDoDAO {
         }
         return errMessage;
     }
+        
+    /**
+     * Them
+     *
+     */
+    
+    public String Insert(Trinhdo entity) {
+		String errMesage = "";
+    	Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		try {
+			session = sessionFactory.openSession();
+			tx = session.beginTransaction();
+			session.save(entity);
+			tx.commit();
+			errMesage = "Thêm mới thành công";
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			System.out.println("Error: " + e.toString());
+			errMesage = "Lỗi cập nhật, không thể thêm !";
+		} finally {
+			session.close();
+		}
+		return errMesage;
+	}
     
     /**
      * Kiem tra ma trinh do duoc cap nhat

@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent;
 import entities.*;
 import dao.*;
 import utilities.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class fLogin extends JFrame {
 
@@ -49,6 +51,7 @@ public class fLogin extends JFrame {
 	 * Create the frame.
 	 */
 	public fLogin() {
+		
 		setTitle("Đăng nhập");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 417, 173);

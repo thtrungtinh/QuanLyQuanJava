@@ -166,8 +166,8 @@ public class ViTriDAO {
         Transaction tx = null;
         try {
         	tx = session.beginTransaction();
-            Vitri vtri = (Vitri) session.get(Vitri.class, maViTri);
-            session.delete(vtri);
+            Vitri entity = (Vitri) session.get(Vitri.class, maViTri);
+            session.delete(entity);
             tx.commit();
         } catch (HibernateException  e) {
         	if(tx != null)

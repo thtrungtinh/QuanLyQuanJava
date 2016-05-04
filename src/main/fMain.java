@@ -49,6 +49,13 @@ private JPanel contentPane;
 		menuBar.add(mnHThng);
 		
 		JMenuItem mntmQunLNgi = new JMenuItem("Qu\u1EA3n l\u00FD ng\u01B0\u1EDDi d\u00F9ng");
+		mntmQunLNgi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				fUsers view = new fUsers();				
+				view.setVisible(true);
+			}
+		});
 		mnHThng.add(mntmQunLNgi);
 		
 		JMenuItem mntmThot = new JMenuItem("Tho\u00E1t");
@@ -60,7 +67,7 @@ private JPanel contentPane;
 		JMenuItem mnItemViTri = new JMenuItem("V\u1ECB tr\u00ED");
 		mnItemViTri.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Mở Danh mục vị trí");
+				System.out.println("Má»Ÿ Danh má»¥c vá»‹ trĂ­");
 				fIndex view = new fIndex();				
 				view.setVisible(true);				
 			}
@@ -70,7 +77,7 @@ private JPanel contentPane;
 		JMenuItem mntmTrnh = new JMenuItem("Tr\u00ECnh \u0111\u1ED9");
 		mntmTrnh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Mở Danh mục Trình độ");
+				System.out.println("Má»Ÿ Danh má»¥c TrĂ¬nh Ä‘á»™");
 				fLevel view = new fLevel();				
 				view.setVisible(true);		
 			}

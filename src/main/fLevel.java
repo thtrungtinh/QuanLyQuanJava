@@ -123,17 +123,15 @@ public class fLevel extends JFrame {
     
     private String InsertData()
     {
-    	SessionFactory factory = HibernateUtil.getSessionFactory();	 
-	    Session session = factory.getCurrentSession();
+    	
 		TrinhDoDAO dao = new TrinhDoDAO();
 		String errMessage = dao.CheckInsert(txtMaTrinhDo.getText());
 		if(errMessage.length()<1)
 		{
 			Trinhdo entity = new Trinhdo();
 			Date currentDate = new Date();
-			try {
-				if(!(session.getTransaction().getStatus() == TransactionStatus.ACTIVE))
-					session.getTransaction().begin();
+			try
+			{
 				entity.setMaTrinhDo(txtMaTrinhDo.getText());
 				entity.setTenTrinhDo(txtTenTrinhDo.getText());
 				entity.setDienGiai(txtDienGiai.getText());
@@ -142,19 +140,15 @@ public class fLevel extends JFrame {
 				entity.setCreatedBy(DataService.GetUserID());
 				entity.setUpdatedDate(currentDate);
 				entity.setCreatedDate(currentDate);
-				session.save(entity);
-				session.getTransaction().commit();		
-				ShowTableData();
-				errMessage = "Thêm mới thành công";
 				
-			} catch (Exception e) {
+				errMessage = dao.Insert(entity);
+				ShowTableData();							
+			} 
+			catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Error: "+ e);
-				session.getTransaction().rollback();
-			}
-			finally {
-				
-			}
+				System.out.println("Error: "+ e.toString());	
+				return e.toString();
+			}			
 		}
 		return errMessage;
     }

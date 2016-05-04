@@ -15,6 +15,11 @@ public class NguoiDungDAO {
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	private static SqlConnection connection = new SqlConnection();
 	
+	/**
+     * Load Nguoidung theo ma nguoi dung va mat khau 
+     *
+     * @return Nguoidung entities
+     */
 	public Nguoidung GetListID(String maNguoiDung, String matKhau) {
 		try {			
 			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
@@ -32,12 +37,12 @@ public class NguoiDungDAO {
 	/**
      * Load list danh sach 
      *
-     * @return List<Vitri>
+     * @return List<Nguoidung>
      */
-	public List<Vitri> Load() {		
+	public List<Nguoidung> Load() {		
 			Session session = sessionFactory.openSession();
 			Transaction tx = null;
-			List<Vitri> list = null;
+			List<Nguoidung> list = null;
 			try {
 				tx = session.beginTransaction();
 				list = session.createQuery("from Nguoidung").list();
@@ -57,14 +62,14 @@ public class NguoiDungDAO {
      *
      * @return error message
      */
-    public String CheckInsert(String maViTri) {
+    public String CheckInsert(String maNguoiDung) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckInsert(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
+                    "{call dbo.NGUOIDUNG_CheckInsert(?,?)}");
+            cstmt.setString("MaNguoiDung", maNguoiDung);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -87,14 +92,14 @@ public class NguoiDungDAO {
      *
      * @return error message
      */
-    public String CheckEdit(String maViTri) {
+    public String CheckEdit(String maNguoiDung) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
                     "{call dbo.VITRI_CheckEdit(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
+            cstmt.setString("MaViTri", maNguoiDung);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -118,12 +123,12 @@ public class NguoiDungDAO {
      * 
      */
     
-	public void UpdateData(String maViTri, String tenViTri, String dienGiai, boolean status) {
+	public void UpdateData(String maNguoiDung, String tenViTri, String dienGiai, boolean status) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			Vitri entity = (Vitri) session.get(Vitri.class, maViTri);
+			Vitri entity = (Vitri) session.get(Vitri.class, maNguoiDung);
 			entity.setTenViTri(tenViTri);
 			entity.setDienGiai(dienGiai);
 			entity.setStatus(status);
@@ -145,14 +150,14 @@ public class NguoiDungDAO {
      *
      * @return error message
      */
-    public String CheckDelete(String maViTri) {
+    public String CheckDelete(String maNguoiDung) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
                     "{call dbo.VITRI_CheckDelete(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
+            cstmt.setString("MaViTri", maNguoiDung);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -174,14 +179,14 @@ public class NguoiDungDAO {
      * Xoa 
      *
      */
-    public void Delete(String maViTri) {
+    public void Delete(String maNguoiDung) {
 
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
         	tx = session.beginTransaction();
-            Vitri vtri = (Vitri) session.get(Vitri.class, maViTri);
-            session.delete(vtri);
+        	Nguoidung entity = (Nguoidung) session.get(Nguoidung.class, maNguoiDung);
+            session.delete(entity);
             tx.commit();
         } catch (HibernateException  e) {
         	if(tx != null)

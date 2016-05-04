@@ -1,5 +1,6 @@
 package main;
 
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -25,6 +26,8 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import org.hibernate.*;
@@ -38,7 +41,7 @@ import java.awt.event.MouseAdapter;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
-public class fUsers extends JFrame {
+public class fUsers extends JFrame  {
 
 	private JPanel contentPane;
 	private JTextField txtMaViTri;
@@ -51,7 +54,35 @@ public class fUsers extends JFrame {
 	private JTextField txtCMND;
 	private JTextField txtDienThoai;
 	private JTextField txtDiaChi;
+	private JComboBox cboTrinhDo;
+	private JComboBox cboViTri;	
 	
+	private List<Vitri> listVitri;
+	private List<Trinhdo> listTrinhDo;
+	
+	private String maViTri;
+	private String maTrinhDo;
+	
+	
+	private void FillcboViTri()
+	{		
+		ViTriDAO entities = new ViTriDAO();
+		listVitri = entities.Load();
+		for(Vitri entity : listVitri)
+		{
+			cboViTri.addItem(entity.getTenViTri());
+		}		
+	}
+	
+	private void FillcboTrinhDo()
+	{		
+		TrinhDoDAO entities = new TrinhDoDAO();
+		listTrinhDo = entities.Load();
+		for(Trinhdo entity : listTrinhDo)
+		{
+			cboTrinhDo.addItem(entity.getTenTrinhDo());
+		}		
+	}
        
     public void ShowTableData() 
     {
@@ -67,8 +98,8 @@ public class fUsers extends JFrame {
     	
         //Set Column Title
     	Vector column = new Vector();
-        column.add("Mã vị trí");
-        column.add("Vị trí");
+        column.add("Mã người dùng");
+        column.add("Tên Người dùng");
         column.add("Diễn Giải");
         column.add("Sử dụng");
         model.setColumnIdentifiers(column);
@@ -190,7 +221,7 @@ public class fUsers extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				System.out.println("Thoát Danh mục vị trí");
+				System.out.println("Thoát Hệ thống người dùng");
 			}							
 			
 		});
@@ -228,7 +259,7 @@ public class fUsers extends JFrame {
 		
 		chkStatus = new JCheckBox("Sử dụng");
 		chkStatus.setSelected(true);
-		chkStatus.setBounds(184, 27, 72, 23);
+		chkStatus.setBounds(184, 27, 79, 23);
 		panel.add(chkStatus);
 		
 		JLabel lblDinGii = new JLabel("Diễn giải");
@@ -303,6 +334,22 @@ public class fUsers extends JFrame {
 		dateChooser.setBounds(97, 196, 115, 20);
 		panel.add(dateChooser);
 		
+		JLabel lblTrnh = new JLabel("Trình độ");
+		lblTrnh.setBounds(21, 229, 66, 14);
+		panel.add(lblTrnh);
+		
+		cboTrinhDo = new JComboBox();
+		cboTrinhDo.setBounds(97, 225, 159, 22);
+		panel.add(cboTrinhDo);
+		
+		JLabel lblVTr_1 = new JLabel("Vị trí");
+		lblVTr_1.setBounds(21, 260, 66, 14);
+		panel.add(lblVTr_1);
+		
+		cboViTri = new JComboBox();
+		cboViTri.setBounds(97, 256, 159, 22);
+		panel.add(cboViTri);
+		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Danh s\u00E1ch", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_1.setBounds(291, 11, 356, 227);
@@ -341,7 +388,13 @@ public class fUsers extends JFrame {
 		tblIndex.setPreferredSize(new Dimension(500, 500));
 		scrollPane.setViewportView(tblIndex);		
 		
+		// call function get data default
+		System.out.println("Mở hê thống -> Quản lý người dùng");
 		ShowTableData();
+		FillcboViTri();
+		FillcboTrinhDo();
+		
+		// call action
 		btnThem.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) {
@@ -371,6 +424,7 @@ public class fUsers extends JFrame {
 				ShowTableData();
 				JOptionPane.showMessageDialog(null, errMessage);
 			}
-		});
+		});	
+		
 	}
 }
