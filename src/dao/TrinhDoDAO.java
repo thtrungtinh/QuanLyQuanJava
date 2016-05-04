@@ -10,47 +10,47 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 
 
-public class ViTriDAO {
+public class TrinhDoDAO {
 
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	private static SqlConnection connection = new SqlConnection();
 	
 	/**
-     * Load list danh sach vi tri 
+     * Load list danh sach Trinh Do
      *
      * @return List<Vitri>
      */
-	public List<Vitri> Load() {		
-			Session session = sessionFactory.openSession();
-			Transaction tx = null;
-			List<Vitri> list = null;
-			try {
-				tx = session.beginTransaction();
-				list = session.createQuery("from Vitri").list();
-				tx.commit();
-			} catch (HibernateException e) {
-				if (tx != null)
-					tx.rollback();
-				e.printStackTrace();
-			} finally {
-				session.close();
-			}
-			return list;
+	public List<Trinhdo> Load() {
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		List<Trinhdo> list = null;
+		try {
+			tx = session.beginTransaction();
+			list = session.createQuery("from Trinhdo").list();
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return list;
 	}
 	
 	/**
-     * Kiem tra ma vi tri da duoc su dung chua
+     * Kiem tra ma trinh do da duoc su dung chua
      *
      * @return error message
      */
-    public String CheckInsert(String maViTri) {
+    public String CheckInsert(String maTrinhDo) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckInsert(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
+                    "{call dbo.TRINHDO_CheckInsert(?,?)}");
+            cstmt.setString("MaTrinhDo", maTrinhDo);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -69,18 +69,18 @@ public class ViTriDAO {
     }
     
     /**
-     * Kiem tra ma vi tri duoc cap nhat
+     * Kiem tra ma trinh do duoc cap nhat
      *
      * @return error message
      */
-    public String CheckEdit(String maViTri) {
+    public String CheckEdit(String maTrinhDo) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckEdit(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
+                    "{call dbo.TRINHDO_CheckEdit(?,?)}");
+            cstmt.setString("MaTrinhDo", maTrinhDo);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -99,18 +99,18 @@ public class ViTriDAO {
     }
     
     /**
-     * cap nhat sua vi tri
+     * cap nhat sua trinh do
      *
      * 
      */
     
-	public void UpdateData(String maViTri, String tenViTri, String dienGiai, boolean status) {
+	public void UpdateData(String maTrinhDo, String tenTrinhDo, String dienGiai, boolean status) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			Vitri entity = (Vitri) session.get(Vitri.class, maViTri);
-			entity.setTenViTri(tenViTri);
+			Trinhdo entity = (Trinhdo) session.get(Trinhdo.class, maTrinhDo);
+			entity.setTenTrinhDo(tenTrinhDo);
 			entity.setDienGiai(dienGiai);
 			entity.setStatus(status);
 			entity.setUpdatedBy(DataService.GetUserID());
@@ -127,18 +127,18 @@ public class ViTriDAO {
 	}
     
     /**
-     * Kiem tra ma vi tri co dung khong
+     * Kiem tra ma trinh do co dung khong
      *
      * @return error message
      */
-    public String CheckDelete(String maViTri) {
+    public String CheckDelete(String maTrinhDo) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckDelete(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
+                    "{call dbo.TRINHDO_CheckDelete(?,?)}");
+            cstmt.setString("MaTrinhDo", maTrinhDo);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -157,17 +157,17 @@ public class ViTriDAO {
     }
     
     /**
-     * Xoa vi tri
+     * Xoa trinh do
      *
      */
-    public void Delete(String maViTri) {
+    public void Delete(String maTrinhDo) {
 
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
         	tx = session.beginTransaction();
-            Vitri vtri = (Vitri) session.get(Vitri.class, maViTri);
-            session.delete(vtri);
+            Trinhdo entity = (Trinhdo) session.get(Trinhdo.class, maTrinhDo);
+            session.delete(entity);
             tx.commit();
         } catch (HibernateException  e) {
         	if(tx != null)

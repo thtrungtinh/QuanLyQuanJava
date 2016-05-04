@@ -36,13 +36,14 @@ import dao.*;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 
-public class fIndex extends JFrame {
+public class fLevel extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField txtMaViTri;
-	private JTextField txtTenViTri;
+	private JTextField txtMaTrinhDo;
+	private JTextField txtTenTrinhDo;
 	private JTextPane txtDienGiai;
-	private JCheckBox chkStatus;	
+	private JCheckBox chkStatus;
+	private String maNguoiDung;
 	private DefaultTableModel model;
 	private JTable tblIndex;
 	
@@ -50,7 +51,7 @@ public class fIndex extends JFrame {
     public void ShowTableData() 
     {
     	System.out.println("--- Loading ---");
-    	ViTriDAO vTriDAO = new ViTriDAO();
+    	TrinhDoDAO dao = new TrinhDoDAO();
     	model = new DefaultTableModel(){
     		@Override
             public boolean isCellEditable(int row, int column) {
@@ -61,19 +62,19 @@ public class fIndex extends JFrame {
     	
         //Set Column Title
     	Vector column = new Vector();
-        column.add("Mã vị trí");
-        column.add("Vị trí");
+        column.add("Mã trình độ");
+        column.add("Trình độ");
         column.add("Diễn Giải");
         column.add("Sử dụng");
         model.setColumnIdentifiers(column);
-        List<Vitri> list = vTriDAO.Load();
+        List<Trinhdo> list = dao.Load();
         for (int i = 0; i < list.size(); i++) {
-        	Vitri vtri = (Vitri)list.get(i);
+        	Trinhdo entity = (Trinhdo)list.get(i);
         	Vector row = new Vector();
-            row.add(vtri.getMaViTri());
-            row.add(vtri.getTenViTri());
-            row.add(vtri.getDienGiai());
-            row.add((Boolean)vtri.isStatus());
+            row.add(entity.getMaTrinhDo());
+            row.add(entity.getTenTrinhDo());
+            row.add(entity.getDienGiai());
+            row.add((Boolean)entity.isStatus());
             
             model.addRow(row);
         }
@@ -89,11 +90,11 @@ public class fIndex extends JFrame {
     {
     	String errMessage = "";
     	try {
-    		ViTriDAO vtri = new ViTriDAO();
-			errMessage = vtri.CheckEdit(maViTri);
+    		TrinhDoDAO dao = new TrinhDoDAO();
+			errMessage = dao.CheckEdit(maViTri);
 			if(errMessage.length()<1)
 			{
-				vtri.UpdateData(maViTri, tenViTri, dienGiai, status);
+				dao.UpdateData(maViTri, tenViTri, dienGiai, status);
 				errMessage = "Cập nhật thành công !";
 			}			
 		} catch (Exception e) {
@@ -107,11 +108,11 @@ public class fIndex extends JFrame {
     {
     	String errMessage = "";
     	try {
-			ViTriDAO vtri = new ViTriDAO();
-			errMessage = vtri.CheckDelete(maViTri);
+			TrinhDoDAO dao = new TrinhDoDAO();
+			errMessage = dao.CheckDelete(maViTri);
 			if(errMessage.length()<1)
 			{
-				vtri.Delete(maViTri);
+				dao.Delete(maViTri);
 				errMessage = "Xóa thành công !";
 			}
 		} catch (Exception e) {
@@ -122,20 +123,19 @@ public class fIndex extends JFrame {
     
     private String InsertData()
     {
-    	
     	SessionFactory factory = HibernateUtil.getSessionFactory();	 
-	    Session session = factory.getCurrentSession();	    
-		ViTriDAO viTriDAO = new ViTriDAO();
-		String errMessage = viTriDAO.CheckInsert(txtMaViTri.getText());
+	    Session session = factory.getCurrentSession();
+		TrinhDoDAO dao = new TrinhDoDAO();
+		String errMessage = dao.CheckInsert(txtMaTrinhDo.getText());
 		if(errMessage.length()<1)
 		{
-			Vitri entity = new Vitri();
+			Trinhdo entity = new Trinhdo();
 			Date currentDate = new Date();
 			try {
 				if(!(session.getTransaction().getStatus() == TransactionStatus.ACTIVE))
 					session.getTransaction().begin();
-				entity.setMaViTri(txtMaViTri.getText());
-				entity.setTenViTri(txtTenViTri.getText());
+				entity.setMaTrinhDo(txtMaTrinhDo.getText());
+				entity.setTenTrinhDo(txtTenTrinhDo.getText());
 				entity.setDienGiai(txtDienGiai.getText());
 				entity.setStatus(chkStatus.isSelected());
 				entity.setUpdatedBy(DataService.GetUserID());
@@ -143,15 +143,16 @@ public class fIndex extends JFrame {
 				entity.setUpdatedDate(currentDate);
 				entity.setCreatedDate(currentDate);
 				session.save(entity);
-				session.getTransaction().commit();			
+				session.getTransaction().commit();		
 				ShowTableData();
 				errMessage = "Thêm mới thành công";
 				
-			} catch (HibernateException e) {				
+			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Error: " + e);
+				System.out.println("Error: "+ e);
 				session.getTransaction().rollback();
-			} finally {
+			}
+			finally {
 				
 			}
 		}
@@ -165,7 +166,7 @@ public class fIndex extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					fIndex frame = new fIndex();
+					fLevel frame = new fLevel();
 					frame.setVisible(true);		
 					
 				} catch (Exception e) {
@@ -179,16 +180,16 @@ public class fIndex extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public fIndex() {
+	public fLevel() {
 		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				System.out.println("Thoát Danh mục vị trí");
+				System.out.println("Thoát Danh mục trình độ");
 			}							
 			
 		});
-		setTitle("V\u1ECB tr\u00ED");
+		setTitle("Trình độ");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 673, 294);
 		contentPane = new JPanel();
@@ -198,31 +199,31 @@ public class fIndex extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Th\u00F4ng tin", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 11, 258, 227);
+		panel.setBounds(10, 11, 271, 227);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Mã vị trí");
-		lblNewLabel.setBounds(21, 31, 46, 14);
+		JLabel lblNewLabel = new JLabel("Mã trình độ");
+		lblNewLabel.setBounds(21, 29, 72, 14);
 		panel.add(lblNewLabel);
 		
-		txtMaViTri = new JTextField();
-		txtMaViTri.setBounds(78, 28, 64, 20);
-		panel.add(txtMaViTri);
-		txtMaViTri.setColumns(10);
+		txtMaTrinhDo = new JTextField();
+		txtMaTrinhDo.setBounds(91, 26, 64, 20);
+		panel.add(txtMaTrinhDo);
+		txtMaTrinhDo.setColumns(10);
 		
-		JLabel lblVTr = new JLabel("Vị trí");
-		lblVTr.setBounds(21, 63, 46, 14);
+		JLabel lblVTr = new JLabel("Trình độ");
+		lblVTr.setBounds(21, 61, 46, 14);
 		panel.add(lblVTr);
 		
-		txtTenViTri = new JTextField();
-		txtTenViTri.setColumns(10);
-		txtTenViTri.setBounds(78, 60, 159, 20);
-		panel.add(txtTenViTri);
+		txtTenTrinhDo = new JTextField();
+		txtTenTrinhDo.setColumns(10);
+		txtTenTrinhDo.setBounds(91, 58, 159, 20);
+		panel.add(txtTenTrinhDo);
 		
 		chkStatus = new JCheckBox("Sử dụng");
 		chkStatus.setSelected(true);
-		chkStatus.setBounds(165, 27, 87, 23);
+		chkStatus.setBounds(178, 25, 87, 23);
 		panel.add(chkStatus);
 		
 		JLabel lblDinGii = new JLabel("Diễn giải");
@@ -230,7 +231,7 @@ public class fIndex extends JFrame {
 		panel.add(lblDinGii);
 		
 		txtDienGiai = new JTextPane();
-		txtDienGiai.setBounds(78, 91, 159, 68);
+		txtDienGiai.setBounds(91, 89, 159, 68);
 		panel.add(txtDienGiai);
 		
 		JButton btnThem = new JButton("Thêm");
@@ -272,11 +273,10 @@ public class fIndex extends JFrame {
 			                String dienGiai = tblIndex.getValueAt(iDongDaChon, 2).toString();
 			                Boolean isStatus = (Boolean) tblIndex.getValueAt(iDongDaChon, 3);		            	
 			            	
-			                txtMaViTri.setText(maViTri);
-			                txtTenViTri.setText(tenViTri);
+			                txtMaTrinhDo.setText(maViTri);
+			                txtTenTrinhDo.setText(tenViTri);
 			                txtDienGiai.setText(dienGiai);
 			                chkStatus.setSelected(isStatus);
-			                
 			            }
 			        }
 				} catch (Exception ex) {
@@ -304,7 +304,7 @@ public class fIndex extends JFrame {
                         "Xóa dữ liệu", 
                         JOptionPane.YES_NO_OPTION); 
 						if (selectedOption == JOptionPane.YES_OPTION) {
-							String errMessage = DeleteData(txtMaViTri.getText());
+							String errMessage = DeleteData(txtMaTrinhDo.getText());
 							ShowTableData();
 							JOptionPane.showMessageDialog(null, errMessage);
 						}
@@ -313,7 +313,7 @@ public class fIndex extends JFrame {
 		btnSua.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) {
-				String errMessage = EditData(txtMaViTri.getText(), txtTenViTri.getText(), txtDienGiai.getText(), chkStatus.isSelected());
+				String errMessage = EditData(txtMaTrinhDo.getText(), txtTenTrinhDo.getText(), txtDienGiai.getText(), chkStatus.isSelected());
 				ShowTableData();
 				JOptionPane.showMessageDialog(null, errMessage);
 			}

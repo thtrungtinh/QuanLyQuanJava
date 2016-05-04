@@ -20,6 +20,7 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 import entities.*;
 import dao.*;
+import utilities.*;
 
 public class fLogin extends JFrame {
 
@@ -81,10 +82,11 @@ public class fLogin extends JFrame {
 				
 				Nguoidung entity = nguoiDungDAO.GetListID(maNguoiDung, new String(txtMatKhau.getPassword()));
 				if(entity != null)
-				{								
-					fMain view = new fMain();
-					view.LoadTitle(entity.getTenNguoiDung());
-					view.SetUser(maNguoiDung);
+				{			
+					DataService.SetUserID(maNguoiDung);
+					DataService.SetUserName(entity.getTenNguoiDung());
+					
+					fMain view = new fMain();									
 					view.setVisible(true);
 					setVisible(false);
 					System.out.println("Đăng nhập thành công !" + maNguoiDung);

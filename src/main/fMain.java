@@ -1,8 +1,6 @@
 package main;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.*;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -11,22 +9,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import utilities.*;
 
 public class fMain extends JFrame {
 
 private JPanel contentPane;
-
 	
-	private String maNguoiDung;
-	public void LoadTitle(String tenNguoiDung) {
-		this.setTitle(this.getTitle() + " - " + tenNguoiDung);
-	}
-	
-	public void SetUser( String maNguoiDung)
-	{
-		this.maNguoiDung = maNguoiDung;
-	}
-	
+		
 	/**
 	 * Launch the application.
 	 */
@@ -34,9 +23,10 @@ private JPanel contentPane;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					fMain frame = new fMain();
-					frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+					fMain frame = new fMain();					
 					frame.setVisible(true);
+					frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+					frame.setTitle("Qu\u1EA3n l\u00FD qu\u00E1n \u0103n - " + DataService.GetUserName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,7 +38,7 @@ private JPanel contentPane;
 	 * Create the frame.
 	 */
 	public fMain() {
-		setTitle("Qu\u1EA3n l\u00FD qu\u00E1n \u0103n");
+		setTitle("Qu\u1EA3n l\u00FD qu\u00E1n \u0103n - " + DataService.GetUserName());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 708, 534);
 		
@@ -71,14 +61,20 @@ private JPanel contentPane;
 		mnItemViTri.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Mở Danh mục vị trí");
-				fIndex view = new fIndex();
-				view.SetUser(maNguoiDung);				
+				fIndex view = new fIndex();				
 				view.setVisible(true);				
 			}
 		});
 		mnDanhMc.add(mnItemViTri);
 		
 		JMenuItem mntmTrnh = new JMenuItem("Tr\u00ECnh \u0111\u1ED9");
+		mntmTrnh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Mở Danh mục Trình độ");
+				fLevel view = new fLevel();				
+				view.setVisible(true);		
+			}
+		});
 		mnDanhMc.add(mntmTrnh);
 		
 		JMenuItem mntmCaLmVic = new JMenuItem("Ca l\u00E0m vi\u1EC7c");
