@@ -1,7 +1,7 @@
 package entities;
-// Generated May 5, 2016 9:29:35 AM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 5, 2016 4:52:51 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,25 +17,26 @@ import javax.persistence.TemporalType;
 @Table(name = "CALAMVIEC", catalog = "RMS")
 public class Calamviec implements java.io.Serializable {
 
-	private Serializable maCa;
-	private int id;
-	private Serializable tenCa;
-	private Serializable dienGiai;
+	private String maCa;
+	private String tenCa;
+	private String dienGiai;
 	private Date batDau;
 	private Date ketThuc;
 	private boolean status;
-	private Serializable createdBy;
+	private String createdBy;
 	private Date createdDate;
-	private Serializable updatedBy;
+	private String updatedBy;
 	private Date updatedDate;
+	private int nhanVienToiThieu;
+	private int nhanVienToiDa;
 
 	public Calamviec() {
 	}
 
-	public Calamviec(Serializable maCa, int id, Serializable tenCa, Serializable dienGiai, Date batDau, Date ketThuc,
-			boolean status, Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
+	public Calamviec(String maCa, String tenCa, String dienGiai, Date batDau, Date ketThuc,
+			boolean status, String createdBy, Date createdDate, String updatedBy, Date updatedDate,
+			int nhanVienToiThieu, int nhanVienToiDa) {
 		this.maCa = maCa;
-		this.id = id;
 		this.tenCa = tenCa;
 		this.dienGiai = dienGiai;
 		this.batDau = batDau;
@@ -45,43 +46,36 @@ public class Calamviec implements java.io.Serializable {
 		this.createdDate = createdDate;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
+		this.nhanVienToiThieu = nhanVienToiThieu;
+		this.nhanVienToiDa = nhanVienToiDa;
 	}
 
 	@Id
 
 	@Column(name = "MaCa", unique = true, nullable = false)
-	public Serializable getMaCa() {
+	public String getMaCa() {
 		return this.maCa;
 	}
 
-	public void setMaCa(Serializable maCa) {
+	public void setMaCa(String maCa) {
 		this.maCa = maCa;
 	}
 
-	@Column(name = "ID", nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	@Column(name = "TenCa", nullable = false)
-	public Serializable getTenCa() {
+	public String getTenCa() {
 		return this.tenCa;
 	}
 
-	public void setTenCa(Serializable tenCa) {
+	public void setTenCa(String tenCa) {
 		this.tenCa = tenCa;
 	}
 
 	@Column(name = "DienGiai", nullable = false)
-	public Serializable getDienGiai() {
+	public String getDienGiai() {
 		return this.dienGiai;
 	}
 
-	public void setDienGiai(Serializable dienGiai) {
+	public void setDienGiai(String dienGiai) {
 		this.dienGiai = dienGiai;
 	}
 
@@ -115,11 +109,11 @@ public class Calamviec implements java.io.Serializable {
 	}
 
 	@Column(name = "CreatedBy", nullable = false)
-	public Serializable getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(Serializable createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -134,11 +128,11 @@ public class Calamviec implements java.io.Serializable {
 	}
 
 	@Column(name = "UpdatedBy", nullable = false)
-	public Serializable getUpdatedBy() {
+	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(Serializable updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -150,6 +144,24 @@ public class Calamviec implements java.io.Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	@Column(name = "NhanVienToiThieu", nullable = false)
+	public int getNhanVienToiThieu() {
+		return this.nhanVienToiThieu;
+	}
+
+	public void setNhanVienToiThieu(int nhanVienToiThieu) {
+		this.nhanVienToiThieu = nhanVienToiThieu;
+	}
+
+	@Column(name = "NhanVienToiDa", nullable = false)
+	public int getNhanVienToiDa() {
+		return this.nhanVienToiDa;
+	}
+
+	public void setNhanVienToiDa(int nhanVienToiDa) {
+		this.nhanVienToiDa = nhanVienToiDa;
 	}
 
 }
