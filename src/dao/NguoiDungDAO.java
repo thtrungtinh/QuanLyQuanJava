@@ -1,14 +1,17 @@
 package dao;
 
 import entities.*;
+import model.NguoiDungModel;
 import utilities.DataService;
 
 import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import org.hibernate.*;
 
 import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.hibernate.transform.Transformers;
 
 public class NguoiDungDAO {
 	
@@ -33,7 +36,8 @@ public class NguoiDungDAO {
 			return null;
 		}
 	}
-	
+		
+		
 	/**
      * Load list danh sach 
      *
@@ -71,7 +75,7 @@ public class NguoiDungDAO {
                     "{call dbo.NGUOIDUNG_CheckInsert(?,?)}");
             cstmt.setString("MaNguoiDung", maNguoiDung);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
+            cstmt.execute();            
             errMessage = cstmt.getNString("Message");
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
@@ -88,6 +92,33 @@ public class NguoiDungDAO {
     }
     
     /**
+     * Them
+     *
+     */
+    
+    public String Insert(Nguoidung entity) {
+		String errMesage = "";
+    	Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		try {
+			session = sessionFactory.openSession();
+			tx = session.beginTransaction();
+			session.save(entity);
+			tx.commit();
+			errMesage = "Thêm mới thành công";
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			System.out.println("Error: " + e.toString());
+			errMesage = "Lỗi cập nhật, không thể thêm !";
+		} finally {
+			session.close();
+		}
+		return errMesage;
+	}
+    
+    /**
      * Kiem tra ma duoc cap nhat
      *
      * @return error message
@@ -98,8 +129,8 @@ public class NguoiDungDAO {
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckEdit(?,?)}");
-            cstmt.setString("MaViTri", maNguoiDung);
+                    "{call dbo.NGUOIDUNG_CheckEdit(?,?)}");
+            cstmt.setString("MaNguoiDung", maNguoiDung);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -123,17 +154,28 @@ public class NguoiDungDAO {
      * 
      */
     
-	public void UpdateData(String maNguoiDung, String tenViTri, String dienGiai, boolean status) {
+	public void UpdateData(String maNguoiDung, String matKhau, String tenNguoiDung, String dienGiai, boolean gioiTinh, Date ngaySinh, String dienThoai, String diaChi, String cmnd, String maViTri, String maTrinhDo, boolean status) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		try {
-			tx = session.beginTransaction();
-			Vitri entity = (Vitri) session.get(Vitri.class, maNguoiDung);
-			entity.setTenViTri(tenViTri);
+			tx = session.beginTransaction();	
+			Nguoidung entity = (Nguoidung) session.get(Nguoidung.class, maNguoiDung);
+			
+			entity.setMatKhau(matKhau);
+			entity.setTenNguoiDung(tenNguoiDung);
 			entity.setDienGiai(dienGiai);
+			entity.setGioiTinh(gioiTinh);
+			entity.setNgaySinh(ngaySinh);
+			entity.setDienThoai(dienThoai);
+			entity.setDiaChi(diaChi);
+			entity.setCmnd(cmnd);
+			entity.setMaViTri(maViTri);
+			entity.setMaTrinhDo(maTrinhDo);
 			entity.setStatus(status);
+						
 			entity.setUpdatedBy(DataService.GetUserID());
 			entity.setUpdatedDate(new Date());
+			
 			session.update(entity);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -156,8 +198,8 @@ public class NguoiDungDAO {
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckDelete(?,?)}");
-            cstmt.setString("MaViTri", maNguoiDung);
+                    "{call dbo.NGUOIDUNG_CheckDelete(?,?)}");
+            cstmt.setString("MaNguoiDung", maNguoiDung);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");

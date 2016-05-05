@@ -1,7 +1,7 @@
 package entities;
-// Generated May 4, 2016 11:27:30 AM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 5, 2016 9:29:35 AM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;

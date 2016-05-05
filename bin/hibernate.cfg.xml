@@ -20,6 +20,6 @@
   <mapping class="entities.ThoigiancothelamviecId"/>
   <mapping class="entities.Trinhdo"/>
   <mapping class="entities.Vitri"/>
-  <mapping class="entities.Nguoidung"/>
+  <mapping class="entities.Nguoidung"/>  
  </session-factory>
 </hibernate-configuration>

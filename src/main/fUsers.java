@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.*;
 import java.util.*;
@@ -34,6 +36,7 @@ import org.hibernate.*;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import entities.*;
+import model.NguoiDungModel;
 import utilities.DataService;
 import dao.*;
 import java.awt.Insets;
@@ -44,26 +47,29 @@ import com.toedter.calendar.JDateChooser;
 public class fUsers extends JFrame  {
 
 	private JPanel contentPane;
-	private JTextField txtMaViTri;
-	private JTextField txtTenViTri;
+	private JTextField txtMaNguoiDung;
+	private JTextField txtTenNguoiDung;
 	private JTextPane txtDienGiai;
 	private JCheckBox chkStatus;	
+	private JCheckBox chkGioiTinh;
 	private DefaultTableModel model;
-	private JTable tblIndex;
+	private JTable tbl;
 	private JPasswordField txtMatKhau;
 	private JTextField txtCMND;
 	private JTextField txtDienThoai;
 	private JTextField txtDiaChi;
+	private JDateChooser jdcNgaySinh;
+	
 	private JComboBox cboTrinhDo;
 	private JComboBox cboViTri;	
 	
 	private List<Vitri> listVitri;
 	private List<Trinhdo> listTrinhDo;
+	List<Nguoidung> listNguoiDung;	
+	List<NguoiDungModel> listNguoiDungModel;
 	
-	private String maViTri;
-	private String maTrinhDo;
 	
-	
+	// Load combobox Vi tri
 	private void FillcboViTri()
 	{		
 		ViTriDAO entities = new ViTriDAO();
@@ -73,7 +79,7 @@ public class fUsers extends JFrame  {
 			cboViTri.addItem(entity.getTenViTri());
 		}		
 	}
-	
+	//Load Combobox TrinhDo
 	private void FillcboTrinhDo()
 	{		
 		TrinhDoDAO entities = new TrinhDoDAO();
@@ -83,11 +89,11 @@ public class fUsers extends JFrame  {
 			cboTrinhDo.addItem(entity.getTenTrinhDo());
 		}		
 	}
-       
-    public void ShowTableData() 
+	// Load DataTable
+	public void ShowTableData() 
     {
     	System.out.println("--- Loading ---");
-    	ViTriDAO vTriDAO = new ViTriDAO();
+    	NguoiDungDAO dao = new NguoiDungDAO();
     	model = new DefaultTableModel(){
     		@Override
             public boolean isCellEditable(int row, int column) {
@@ -98,39 +104,122 @@ public class fUsers extends JFrame  {
     	
         //Set Column Title
     	Vector column = new Vector();
-        column.add("Mã người dùng");
-        column.add("Tên Người dùng");
-        column.add("Diễn Giải");
+        column.add("Mã NV");
+        column.add("Tên NV");
+        column.add("Nam");
+        column.add("Ngày sinh");
+        column.add("CMND");
+        column.add("Điện thoại");
+        column.add("Địa chỉ");        
         column.add("Sử dụng");
         model.setColumnIdentifiers(column);
-        List<Vitri> list = vTriDAO.Load();
-        for (int i = 0; i < list.size(); i++) {
-        	Vitri vtri = (Vitri)list.get(i);
+        listNguoiDung = dao.Load();
+        for (int i = 0; i < listNguoiDung.size(); i++) {
+        	Nguoidung entity = (Nguoidung)listNguoiDung.get(i);
         	Vector row = new Vector();
-            row.add(vtri.getMaViTri());
-            row.add(vtri.getTenViTri());
-            row.add(vtri.getDienGiai());
-            row.add((Boolean)vtri.isStatus());
+        	row.add(entity.getMaNguoiDung());
+        	row.add(entity.getTenNguoiDung());
+        	row.add((Boolean)entity.isGioiTinh());
+        	row.add(entity.getNgaySinh());
+        	row.add(entity.getCmnd());
+        	row.add(entity.getDienThoai());
+        	row.add(entity.getDiaChi());                 
+            row.add((Boolean)entity.isStatus());
             
             model.addRow(row);
         }
         
-        tblIndex.setModel(model);
-        TableColumn tc = tblIndex.getColumnModel().getColumn(3);
-        tc.setCellRenderer( tblIndex.getDefaultRenderer( Boolean.class ) );
-        tc.setCellEditor( tblIndex.getDefaultEditor( Boolean.class ) );
+        tbl.setModel(model);
+        DataService.SetColumnTableToCheckBox(tbl, 2);
+        DataService.SetColumnTableToCheckBox(tbl, 7);
+        DataService.SetWidhtColumnTable(tbl, 0, 140);
+        DataService.SetWidhtColumnTable(tbl, 1, 200);
+        DataService.SetWidhtColumnTable(tbl, 2, 80);
+        DataService.SetWidhtColumnTable(tbl, 3, 140);
+        DataService.SetWidhtColumnTable(tbl, 4, 140);
+        DataService.SetWidhtColumnTable(tbl, 5, 140);
+        DataService.SetWidhtColumnTable(tbl, 6, 140);
+        DataService.SetWidhtColumnTable(tbl, 7, 80);
+        
     	System.out.println("--- Success ---");
+	} 
+	
+	private int GetIndexVitri(List<Vitri> entities, String key) {
+		int index = -1;
+		for(int i = 0; i< entities.size(); i++)
+		{			
+			if(key.equals(entities.get(i).getMaViTri()))
+			{				
+				return i;
+			}				
+		}
+		return index;
 	}
-    
-    private String EditData(String maViTri, String tenViTri, String dienGiai, boolean status)
+	
+	private int GetIndexTrinhDo(List<Trinhdo> entities, String key) {
+		int index = -1;
+		for(int i = 0; i< entities.size(); i++)
+		{			
+			if(key.equals(entities.get(i).getMaTrinhDo()))
+			{				
+				return i;
+			}				
+		}
+		return index;
+	}
+	
+    //Load Table click row
+	private void ClickRowTable(int index) {
+		Nguoidung entity = listNguoiDung.get(index);
+		txtMaNguoiDung.setText(entity.getMaNguoiDung());
+		txtTenNguoiDung.setText(entity.getTenNguoiDung());
+		txtMatKhau.setText(entity.getMatKhau());
+		txtCMND.setText(entity.getCmnd());
+		chkGioiTinh.setSelected(entity.isGioiTinh());
+		txtDiaChi.setText(entity.getDiaChi());
+		txtDienThoai.setText(entity.getDienThoai());
+		txtDienGiai.setText(entity.getDienGiai());
+		chkStatus.setSelected(entity.isStatus());
+		
+		jdcNgaySinh.setDate(entity.getNgaySinh());	
+		int intdexViTri = GetIndexVitri(listVitri, entity.getMaViTri());
+		int intdexTrinhDo = GetIndexTrinhDo(listTrinhDo, entity.getMaTrinhDo());
+		
+		cboViTri.setSelectedIndex(intdexViTri);
+		cboTrinhDo.setSelectedIndex(intdexTrinhDo);
+	}
+	
+    private String EditData()
     {
     	String errMessage = "";
     	try {
-    		ViTriDAO vtri = new ViTriDAO();
-			errMessage = vtri.CheckEdit(maViTri);
+    		NguoiDungDAO dao = new NguoiDungDAO();
+			errMessage = dao.CheckEdit(txtMaNguoiDung.getText());
 			if(errMessage.length()<1)
 			{
-				vtri.UpdateData(maViTri, tenViTri, dienGiai, status);
+				SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");				 
+				Date ngaysinh = new Date();
+				try {
+					ngaysinh = formatter.parse(((JTextField)jdcNgaySinh.getDateEditor().getUiComponent()).getText());
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("Error: " + e.toString());
+				}
+				String maNguoiDung = txtMaNguoiDung.getText();
+				String tenNguoiDung = txtTenNguoiDung.getText();
+				String matKhau = txtMatKhau.getText();
+				String cmnd = txtCMND.getText();
+				boolean gioiTinh = chkGioiTinh.isSelected();
+				String diaChi = txtDiaChi.getText();
+				String dienThoai = txtDienThoai.getText();
+				String dienGiai = txtDienGiai.getText();
+				boolean status = chkStatus.isSelected();			
+				
+				String maViTri = listVitri.get(cboViTri.getSelectedIndex()).getMaViTri();
+				String maTrinhDo = listTrinhDo.get(cboTrinhDo.getSelectedIndex()).getMaTrinhDo();		
+				
+				dao.UpdateData(maNguoiDung, matKhau, tenNguoiDung, dienGiai, gioiTinh, ngaysinh, dienThoai, diaChi, cmnd, maViTri, maTrinhDo, status);
 				errMessage = "Cập nhật thành công !";
 			}			
 		} catch (Exception e) {
@@ -140,15 +229,15 @@ public class fUsers extends JFrame  {
     	return errMessage;
     }
     
-    private String DeleteData(String maViTri)
+    private String DeleteData(String key)
     {
     	String errMessage = "";
     	try {
-			ViTriDAO vtri = new ViTriDAO();
-			errMessage = vtri.CheckDelete(maViTri);
+			NguoiDungDAO dao = new NguoiDungDAO();
+			errMessage = dao.CheckDelete(key);
 			if(errMessage.length()<1)
 			{
-				vtri.Delete(maViTri);
+				dao.Delete(key);
 				errMessage = "Xóa thành công !";
 			}
 		} catch (Exception e) {
@@ -158,39 +247,53 @@ public class fUsers extends JFrame  {
     }
     
     private String InsertData()
-    {
-    	
-    	SessionFactory factory = HibernateUtil.getSessionFactory();	 
-	    Session session = factory.getCurrentSession();	    
-		ViTriDAO viTriDAO = new ViTriDAO();
-		String errMessage = viTriDAO.CheckInsert(txtMaViTri.getText());
+    {   	
+    	NguoiDungDAO dao = new NguoiDungDAO();
+		String errMessage = dao.CheckInsert(txtMaNguoiDung.getText());
 		if(errMessage.length()<1)
 		{
-			Vitri entity = new Vitri();
+			Nguoidung entity = new Nguoidung();
 			Date currentDate = new Date();
-			try {
-				if(!(session.getTransaction().getStatus() == TransactionStatus.ACTIVE))
-					session.getTransaction().begin();
-				entity.setMaViTri(txtMaViTri.getText());
-				entity.setTenViTri(txtTenViTri.getText());
+			try 
+			{		
+				SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+				 
+				Date ngaysinh = new Date();
+				try {
+					ngaysinh = formatter.parse(((JTextField)jdcNgaySinh.getDateEditor().getUiComponent()).getText());
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("Error: " + e.toString());
+				}
+				entity.setMaNguoiDung(txtMaNguoiDung.getText());
+				entity.setTenNguoiDung(txtTenNguoiDung.getText());
+				entity.setMatKhau(txtMatKhau.getText());
+				entity.setCmnd(txtCMND.getText());
+				entity.setGioiTinh(chkGioiTinh.isSelected());
+				entity.setDiaChi(txtDiaChi.getText());
+				entity.setDienThoai(txtDienThoai.getText());
 				entity.setDienGiai(txtDienGiai.getText());
 				entity.setStatus(chkStatus.isSelected());
+				
+				entity.setNgaySinh(ngaysinh);
+				entity.setMaViTri(listVitri.get(cboViTri.getSelectedIndex()).getMaViTri());
+				entity.setMaTrinhDo(listTrinhDo.get(cboTrinhDo.getSelectedIndex()).getMaTrinhDo());				
+				
 				entity.setUpdatedBy(DataService.GetUserID());
 				entity.setCreatedBy(DataService.GetUserID());
 				entity.setUpdatedDate(currentDate);
 				entity.setCreatedDate(currentDate);
-				session.save(entity);
-				session.getTransaction().commit();			
+						
 				ShowTableData();
-				errMessage = "Thêm mới thành công";
+				errMessage = dao.Insert(entity);
 				
-			} catch (HibernateException e) {				
+			} 
+			catch (Exception e) 
+			{				
 				e.printStackTrace();
-				System.out.println("Error: " + e);
-				session.getTransaction().rollback();
-			} finally {
-				
-			}
+				System.out.println("Error: " + e);				
+			} 
 		}
 		return errMessage;
     }
@@ -203,6 +306,7 @@ public class fUsers extends JFrame  {
 			public void run() {
 				try {
 					fUsers frame = new fUsers();
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);		
 					
 				} catch (Exception e) {
@@ -225,9 +329,9 @@ public class fUsers extends JFrame  {
 			}							
 			
 		});
-		setTitle("V\u1ECB tr\u00ED");
+		setTitle("Nhân viên");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 673, 504);
+		setBounds(100, 100, 1115, 485);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -239,23 +343,23 @@ public class fUsers extends JFrame  {
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Mã người dùng");
+		JLabel lblNewLabel = new JLabel("Mã nhân viên");
 		lblNewLabel.setBounds(21, 31, 81, 14);
 		panel.add(lblNewLabel);
 		
-		txtMaViTri = new JTextField();
-		txtMaViTri.setBounds(97, 28, 81, 20);
-		panel.add(txtMaViTri);
-		txtMaViTri.setColumns(10);
+		txtMaNguoiDung = new JTextField();
+		txtMaNguoiDung.setBounds(97, 28, 81, 20);
+		panel.add(txtMaNguoiDung);
+		txtMaNguoiDung.setColumns(10);
 		
-		JLabel lblVTr = new JLabel("Tên");
-		lblVTr.setBounds(21, 59, 46, 14);
+		JLabel lblVTr = new JLabel("Tên NV");
+		lblVTr.setBounds(21, 59, 81, 14);
 		panel.add(lblVTr);
 		
-		txtTenViTri = new JTextField();
-		txtTenViTri.setColumns(10);
-		txtTenViTri.setBounds(97, 56, 159, 20);
-		panel.add(txtTenViTri);
+		txtTenNguoiDung = new JTextField();
+		txtTenNguoiDung.setColumns(10);
+		txtTenNguoiDung.setBounds(97, 56, 159, 20);
+		panel.add(txtTenNguoiDung);
 		
 		chkStatus = new JCheckBox("Sử dụng");
 		chkStatus.setSelected(true);
@@ -303,10 +407,10 @@ public class fUsers extends JFrame  {
 		txtCMND.setBounds(97, 112, 81, 20);
 		panel.add(txtCMND);
 		
-		JCheckBox chckbxNam = new JCheckBox("Nam");
-		chckbxNam.setSelected(true);
-		chckbxNam.setBounds(184, 111, 72, 23);
-		panel.add(chckbxNam);
+		chkGioiTinh = new JCheckBox("Nam");
+		chkGioiTinh.setSelected(true);
+		chkGioiTinh.setBounds(184, 111, 72, 23);
+		panel.add(chkGioiTinh);
 		
 		JLabel lblinThoi = new JLabel("Điện thoại");
 		lblinThoi.setBounds(21, 143, 66, 14);
@@ -330,9 +434,10 @@ public class fUsers extends JFrame  {
 		lblNgySinh.setBounds(21, 199, 66, 14);
 		panel.add(lblNgySinh);
 		
-		JDateChooser dateChooser = new JDateChooser();
-		dateChooser.setBounds(97, 196, 115, 20);
-		panel.add(dateChooser);
+		jdcNgaySinh = new JDateChooser();
+		jdcNgaySinh.setDateFormatString("dd-MM-yyyy");
+		jdcNgaySinh.setBounds(97, 196, 115, 20);
+		panel.add(jdcNgaySinh);
 		
 		JLabel lblTrnh = new JLabel("Trình độ");
 		lblTrnh.setBounds(21, 229, 66, 14);
@@ -352,32 +457,24 @@ public class fUsers extends JFrame  {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Danh s\u00E1ch", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(291, 11, 356, 227);
+		panel_1.setBounds(291, 11, 798, 425);
 		contentPane.add(panel_1);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
-		JScrollPane scrollPane = new JScrollPane();
+		JScrollPane scrollPane = new JScrollPane(tbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		panel_1.add(scrollPane, BorderLayout.CENTER);
 		
-		tblIndex = new JTable();
-		tblIndex.addMouseListener(new MouseAdapter() {
+		tbl = new JTable();
+		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		tbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {				
-					if (e.getSource() == tblIndex) {
-			            int iDongDaChon = tblIndex.getSelectedRow();
-			            if (iDongDaChon != -1) {
-			            	
-			                String maViTri = tblIndex.getValueAt(iDongDaChon, 0).toString();
-			                String tenViTri = tblIndex.getValueAt(iDongDaChon, 1).toString();
-			                String dienGiai = tblIndex.getValueAt(iDongDaChon, 2).toString();
-			                Boolean isStatus = (Boolean) tblIndex.getValueAt(iDongDaChon, 3);		            	
-			            	
-			                txtMaViTri.setText(maViTri);
-			                txtTenViTri.setText(tenViTri);
-			                txtDienGiai.setText(dienGiai);
-			                chkStatus.setSelected(isStatus);
-			                
+					if (e.getSource() == tbl) {
+			            int index = tbl.getSelectedRow();
+			            if (index != -1) 
+			            {			            	
+			            	ClickRowTable(index);	                	                
 			            }
 			        }
 				} catch (Exception ex) {
@@ -385,8 +482,8 @@ public class fUsers extends JFrame  {
 				}
 			}
 		});
-		tblIndex.setPreferredSize(new Dimension(500, 500));
-		scrollPane.setViewportView(tblIndex);		
+		tbl.setPreferredSize(new Dimension(500, 500));
+		scrollPane.setViewportView(tbl);
 		
 		// call function get data default
 		System.out.println("Mở hê thống -> Quản lý người dùng");
@@ -411,7 +508,7 @@ public class fUsers extends JFrame  {
                         "Xóa dữ liệu", 
                         JOptionPane.YES_NO_OPTION); 
 						if (selectedOption == JOptionPane.YES_OPTION) {
-							String errMessage = DeleteData(txtMaViTri.getText());
+							String errMessage = DeleteData(txtMaNguoiDung.getText());
 							ShowTableData();
 							JOptionPane.showMessageDialog(null, errMessage);
 						}
@@ -420,7 +517,7 @@ public class fUsers extends JFrame  {
 		btnSua.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) {
-				String errMessage = EditData(txtMaViTri.getText(), txtTenViTri.getText(), txtDienGiai.getText(), chkStatus.isSelected());
+				String errMessage = EditData();
 				ShowTableData();
 				JOptionPane.showMessageDialog(null, errMessage);
 			}

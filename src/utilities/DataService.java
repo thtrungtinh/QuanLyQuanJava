@@ -1,5 +1,9 @@
 package utilities;
 
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+
+import org.hibernate.annotations.Entity;
 
 public class DataService {
 	private static String userID;
@@ -25,6 +29,17 @@ public class DataService {
 		userName = name;
 	}
 	
+	public static void SetColumnTableToCheckBox(JTable table, int index)
+	{
+		TableColumn tc = table.getColumnModel().getColumn(index);
+        tc.setCellRenderer( table.getDefaultRenderer( Boolean.class ) );
+        tc.setCellEditor( table.getDefaultEditor( Boolean.class ) );
+	}
+	
+	public static void SetWidhtColumnTable(JTable table, int index, int width)
+	{
+		table.getColumnModel().getColumn(index).setPreferredWidth(width);
+	}
 	
 
 }

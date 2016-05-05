@@ -1,4 +1,5 @@
-/main/
 /dao/
-/features/
-/plugins/
+/main/
+/entities/
+/utilities/
+/model/
