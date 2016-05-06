@@ -19,7 +19,7 @@ public class ThoiGianLamViecModel {
 		
 	}
 	
-	public ThoiGianLamViecModel(String maCa, String maNguoiDung, String dienGiai, boolean status, String createdBy, Date createdDate, 
+	/*public ThoiGianLamViecModel(String maCa, String maNguoiDung, String dienGiai, boolean status, String createdBy, Date createdDate, 
 			String updatedBy, Date updatedDate, String tenCa, String tenNguoiDung) 
 	{
 		this.maCa = maCa;
@@ -33,7 +33,7 @@ public class ThoiGianLamViecModel {
 		this.tenCa = tenCa;
 		this.tenNguoiDung = tenNguoiDung;
 				
-	}
+	}*/
 
 	public String getMaCa() {
 		return maCa;

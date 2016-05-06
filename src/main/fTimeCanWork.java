@@ -212,12 +212,12 @@ public class fTimeCanWork extends JFrame  {
 	
     //Load Table click row
 	private void ClickRowTable(int index) {
-		Thoigiancothelamviec entity = listThoiGian.get(index);		
+		ThoiGianLamViecModel entity = listThoiGianModel.get(index);		
 		txtDienGiai.setText(entity.getDienGiai());
 		chkStatus.setSelected(entity.isStatus());		
 		
-		int intdexCa = GetIndexCa(listCa, entity.getId().getMaCa());
-		int intdexNguoiDung = GetIndexNguoiDung(listNguoiDung, entity.getId().getMaNguoiDung());
+		int intdexCa = GetIndexCa(listCa, entity.getMaCa());
+		int intdexNguoiDung = GetIndexNguoiDung(listNguoiDung, entity.getMaNguoiDung());
 		cboCa.setSelectedIndex(intdexCa);
 		cboNguoiDung.setSelectedIndex(intdexNguoiDung);		
 	}
@@ -237,6 +237,7 @@ public class fTimeCanWork extends JFrame  {
 				boolean status = chkStatus.isSelected();	
 				
 				dao.UpdateData(key, dienGiai, status);
+				ShowTableData();
 				errMessage = "Cập nhật thành công !";
 			}			
 		} catch (Exception e) {
@@ -270,8 +271,8 @@ public class fTimeCanWork extends JFrame  {
     private String InsertData()
     {   	
     	ThoiGianCoTheLamViecDAO dao = new ThoiGianCoTheLamViecDAO();
-    	String maCa = listCa.get(cboNguoiDung.getSelectedIndex()).getMaCa();
-		String maNguoiDung = listNguoiDung.get(cboCa.getSelectedIndex()).getMaNguoiDung();	
+    	String maCa = listCa.get(cboCa.getSelectedIndex()).getMaCa();
+		String maNguoiDung = listNguoiDung.get(cboNguoiDung.getSelectedIndex()).getMaNguoiDung();	
 		ThoigiancothelamviecId key = new ThoigiancothelamviecId(maCa, maNguoiDung);
 		String errMessage = dao.CheckInsert(key);
 		if(errMessage.length()<1)
@@ -287,11 +288,10 @@ public class fTimeCanWork extends JFrame  {
 				entity.setUpdatedBy(DataService.GetUserID());
 				entity.setCreatedBy(DataService.GetUserID());
 				entity.setUpdatedDate(currentDate);
-				entity.setCreatedDate(currentDate);
-						
-				ShowTableData();
-				errMessage = dao.Insert(entity);
+				entity.setCreatedDate(currentDate);						
 				
+				errMessage = dao.Insert(entity);
+				ShowTableData();
 			} 
 			catch (Exception e) 
 			{				

@@ -69,7 +69,7 @@ public class ThoiGianCoTheLamViecDAO {
      */
     public List<ThoiGianLamViecModel> GetList() {
         CallableStatement cstmt = null;        
-        List<ThoiGianLamViecModel> list = null;
+        List<ThoiGianLamViecModel> list = new ArrayList<>();
         try {
             cstmt = connection.getConnection().prepareCall(
                     " exec dbo.THOIGIANCOTHELAMVIEC_GetList ");            
