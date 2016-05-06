@@ -1,7 +1,7 @@
 package entities;
-// Generated May 5, 2016 9:29:35 AM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 6, 2016 11:58:11 AM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -20,21 +20,19 @@ import javax.persistence.TemporalType;
 public class Thoigiancothelamviec implements java.io.Serializable {
 
 	private ThoigiancothelamviecId id;
-	private int id_1;
-	private Serializable dienGiai;
+	private String dienGiai;
 	private boolean status;
-	private Serializable createdBy;
+	private String createdBy;
 	private Date createdDate;
-	private Serializable updatedBy;
+	private String updatedBy;
 	private Date updatedDate;
 
 	public Thoigiancothelamviec() {
 	}
 
-	public Thoigiancothelamviec(ThoigiancothelamviecId id, int id_1, Serializable dienGiai, boolean status,
-			Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
+	public Thoigiancothelamviec(ThoigiancothelamviecId id, String dienGiai, boolean status,
+			String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
 		this.id = id;
-		this.id_1 = id_1;
 		this.dienGiai = dienGiai;
 		this.status = status;
 		this.createdBy = createdBy;
@@ -55,21 +53,12 @@ public class Thoigiancothelamviec implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "ID", nullable = false)
-	public int getId_1() {
-		return this.id_1;
-	}
-
-	public void setId_1(int id_1) {
-		this.id_1 = id_1;
-	}
-
 	@Column(name = "DienGiai", nullable = false)
-	public Serializable getDienGiai() {
+	public String getDienGiai() {
 		return this.dienGiai;
 	}
 
-	public void setDienGiai(Serializable dienGiai) {
+	public void setDienGiai(String dienGiai) {
 		this.dienGiai = dienGiai;
 	}
 
@@ -83,11 +72,11 @@ public class Thoigiancothelamviec implements java.io.Serializable {
 	}
 
 	@Column(name = "CreatedBy", nullable = false)
-	public Serializable getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(Serializable createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -102,11 +91,11 @@ public class Thoigiancothelamviec implements java.io.Serializable {
 	}
 
 	@Column(name = "UpdatedBy", nullable = false)
-	public Serializable getUpdatedBy() {
+	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(Serializable updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

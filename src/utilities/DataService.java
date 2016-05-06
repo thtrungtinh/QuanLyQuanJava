@@ -1,9 +1,14 @@
 package utilities;
 
-import javax.swing.JTable;
-import javax.swing.table.TableColumn;
 
-import org.hibernate.annotations.Entity;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.*;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import javax.swing.text.NumberFormatter;
+
 
 public class DataService {
 	private static String userID;
@@ -40,6 +45,39 @@ public class DataService {
 	{
 		table.getColumnModel().getColumn(index).setPreferredWidth(width);
 	}
+	
+	public static void LoadSpinEditTime(JSpinner spe)
+	{
+		SpinnerDateModel model = new SpinnerDateModel();
+		model.setCalendarField(Calendar.MINUTE);
+		
+		spe.setModel(model);
+		spe.setEditor(new JSpinner.DateEditor(spe, "hh:mm a"));
+	}
+	
+	public static NumberFormatter SetTextFieldIntegerFormat() {
+		NumberFormat intFormat = NumberFormat.getIntegerInstance();
+
+		NumberFormatter numberFormatter = new NumberFormatter(intFormat);
+		numberFormatter.setValueClass(Integer.class); //optional, ensures you will always get a long value
+		numberFormatter.setAllowsInvalid(false); //this is the key!!
+		numberFormatter.setMinimum(0); //Optional
+		
+		return numberFormatter;
+	}
+	
+	public static NumberFormatter SetTextFieldBigDecimalFormat() {
+		NumberFormat intFormat = NumberFormat.getIntegerInstance();
+		BigDecimal bgd = new BigDecimal("0");
+		NumberFormatter numberFormatter = new NumberFormatter(intFormat);
+		numberFormatter.setValueClass(BigDecimal.class); //optional, ensures you will always get a long value
+		numberFormatter.setAllowsInvalid(false); //this is the key!!
+		numberFormatter.setMinimum(bgd); //Optional
+		
+		
+		return numberFormatter;
+	}
+	
 	
 
 }

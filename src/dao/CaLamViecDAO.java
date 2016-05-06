@@ -16,17 +16,17 @@ public class CaLamViecDAO {
 	private static SqlConnection connection = new SqlConnection();
 	
 	/**
-     * Load list danh sach Trinh Do
+     * Load list danh sach ca lam viec
      *
      * @return List<Vitri>
      */
-	public List<Trinhdo> Load() {
+	public List<Calamviec> Load() {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
-		List<Trinhdo> list = null;
+		List<Calamviec> list = null;
 		try {
 			tx = session.beginTransaction();
-			list = session.createQuery("from Trinhdo").list();
+			list = session.createQuery("from Calamviec").list();
 			tx.commit();
 		} catch (HibernateException e) {
 			if (tx != null)
@@ -39,18 +39,18 @@ public class CaLamViecDAO {
 	}
 	
 	/**
-     * Kiem tra ma trinh do da duoc su dung chua
+     * Kiem tra ma ca da duoc su dung chua
      *
      * @return error message
      */
-    public String CheckInsert(String maTrinhDo) {
+    public String CheckInsert(String maCa) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.TRINHDO_CheckInsert(?,?)}");
-            cstmt.setString("MaTrinhDo", maTrinhDo);
+                    "{call dbo.CALAMVIEC_CheckInsert(?,?)}");
+            cstmt.setString("MaCa", maCa);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -73,7 +73,7 @@ public class CaLamViecDAO {
      *
      */
     
-    public String Insert(Trinhdo entity) {
+    public String Insert(Calamviec entity) {
 		String errMesage = "";
     	Session session = sessionFactory.openSession();
 		Transaction tx = null;
@@ -96,18 +96,18 @@ public class CaLamViecDAO {
 	}
     
     /**
-     * Kiem tra ma trinh do duoc cap nhat
+     * Kiem tra ma ca duoc cap nhat
      *
      * @return error message
      */
-    public String CheckEdit(String maTrinhDo) {
+    public String CheckEdit(String maCa) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.TRINHDO_CheckEdit(?,?)}");
-            cstmt.setString("MaTrinhDo", maTrinhDo);
+                    "{call dbo.CALAMVIEC_CheckEdit(?,?)}");
+            cstmt.setString("MaCa", maCa);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -126,19 +126,26 @@ public class CaLamViecDAO {
     }
     
     /**
-     * cap nhat sua trinh do
+     * cap nhat sua
      *
      * 
      */
     
-	public void UpdateData(String maTrinhDo, String tenTrinhDo, String dienGiai, boolean status) {
+	public void UpdateData(String maCa, String tenCa, Date batDau, Date ketThuc, int nhanVienToiThieu, int nhanVienToiDa, int LuongCaTheoNgay, String dienGiai, boolean status) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			Trinhdo entity = (Trinhdo) session.get(Trinhdo.class, maTrinhDo);
-			entity.setTenTrinhDo(tenTrinhDo);
+			Calamviec entity = (Calamviec) session.get(Calamviec.class, maCa);
+			entity.setMaCa(maCa);
+			entity.setTenCa(tenCa);
+			entity.setBatDau(new java.sql.Timestamp(batDau.getTime()));
+			entity.setKetThuc(new java.sql.Timestamp(ketThuc.getTime()));
+			entity.setNhanVienToiThieu(nhanVienToiThieu);
+			entity.setNhanVienToiDa(nhanVienToiDa);
+			entity.setLuongCaTheoNgay(LuongCaTheoNgay);
 			entity.setDienGiai(dienGiai);
+			
 			entity.setStatus(status);
 			entity.setUpdatedBy(DataService.GetUserID());
 			entity.setUpdatedDate(new Date());
@@ -154,18 +161,18 @@ public class CaLamViecDAO {
 	}
     
     /**
-     * Kiem tra ma trinh do co dung khong
+     * Kiem tra ma 
      *
      * @return error message
      */
-    public String CheckDelete(String maTrinhDo) {
+    public String CheckDelete(String maCa) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.TRINHDO_CheckDelete(?,?)}");
-            cstmt.setString("MaTrinhDo", maTrinhDo);
+                    "{call dbo.CALAMVIEC_CheckDelete(?,?)}");
+            cstmt.setString("MaCa", maCa);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -187,13 +194,13 @@ public class CaLamViecDAO {
      * Xoa trinh do
      *
      */
-    public void Delete(String maTrinhDo) {
+    public void Delete(String maCa) {
 
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
         	tx = session.beginTransaction();
-            Trinhdo entity = (Trinhdo) session.get(Trinhdo.class, maTrinhDo);
+            Calamviec entity = (Calamviec) session.get(Calamviec.class, maCa);
             session.delete(entity);
             tx.commit();
         } catch (HibernateException  e) {

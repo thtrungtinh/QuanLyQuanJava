@@ -1,7 +1,7 @@
 package entities;
-// Generated May 5, 2016 9:29:35 AM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 6, 2016 11:58:11 AM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -11,32 +11,32 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class ThoigiancothelamviecId implements java.io.Serializable {
 
-	private Serializable maCa;
-	private Serializable maNguoiDung;
+	private String maCa;
+	private String maNguoiDung;
 
 	public ThoigiancothelamviecId() {
 	}
 
-	public ThoigiancothelamviecId(Serializable maCa, Serializable maNguoiDung) {
+	public ThoigiancothelamviecId(String maCa, String maNguoiDung) {
 		this.maCa = maCa;
 		this.maNguoiDung = maNguoiDung;
 	}
 
 	@Column(name = "MaCa", nullable = false)
-	public Serializable getMaCa() {
+	public String getMaCa() {
 		return this.maCa;
 	}
 
-	public void setMaCa(Serializable maCa) {
+	public void setMaCa(String maCa) {
 		this.maCa = maCa;
 	}
 
 	@Column(name = "MaNguoiDung", nullable = false)
-	public Serializable getMaNguoiDung() {
+	public String getMaNguoiDung() {
 		return this.maNguoiDung;
 	}
 
-	public void setMaNguoiDung(Serializable maNguoiDung) {
+	public void setMaNguoiDung(String maNguoiDung) {
 		this.maNguoiDung = maNguoiDung;
 	}
 

@@ -1,7 +1,8 @@
 package entities;
-// Generated May 5, 2016 4:52:51 PM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 6, 2016 9:19:16 AM by Hibernate Tools 5.1.0.Alpha1
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,32 +23,34 @@ public class Calamviec implements java.io.Serializable {
 	private String dienGiai;
 	private Date batDau;
 	private Date ketThuc;
+	private int nhanVienToiThieu;
+	private int nhanVienToiDa;
+	private int luongCaTheoNgay;
 	private boolean status;
 	private String createdBy;
 	private Date createdDate;
 	private String updatedBy;
 	private Date updatedDate;
-	private int nhanVienToiThieu;
-	private int nhanVienToiDa;
 
 	public Calamviec() {
 	}
 
 	public Calamviec(String maCa, String tenCa, String dienGiai, Date batDau, Date ketThuc,
-			boolean status, String createdBy, Date createdDate, String updatedBy, Date updatedDate,
-			int nhanVienToiThieu, int nhanVienToiDa) {
+			int nhanVienToiThieu, int nhanVienToiDa, int luongCaTheoNgay, boolean status, String createdBy,
+			Date createdDate, String updatedBy, Date updatedDate) {
 		this.maCa = maCa;
 		this.tenCa = tenCa;
 		this.dienGiai = dienGiai;
 		this.batDau = batDau;
 		this.ketThuc = ketThuc;
+		this.nhanVienToiThieu = nhanVienToiThieu;
+		this.nhanVienToiDa = nhanVienToiDa;
+		this.luongCaTheoNgay = luongCaTheoNgay;
 		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
 		this.updatedBy = updatedBy;
 		this.updatedDate = updatedDate;
-		this.nhanVienToiThieu = nhanVienToiThieu;
-		this.nhanVienToiDa = nhanVienToiDa;
 	}
 
 	@Id
@@ -99,6 +102,33 @@ public class Calamviec implements java.io.Serializable {
 		this.ketThuc = ketThuc;
 	}
 
+	@Column(name = "NhanVienToiThieu", nullable = false)
+	public int getNhanVienToiThieu() {
+		return this.nhanVienToiThieu;
+	}
+
+	public void setNhanVienToiThieu(int nhanVienToiThieu) {
+		this.nhanVienToiThieu = nhanVienToiThieu;
+	}
+
+	@Column(name = "NhanVienToiDa", nullable = false)
+	public int getNhanVienToiDa() {
+		return this.nhanVienToiDa;
+	}
+
+	public void setNhanVienToiDa(int nhanVienToiDa) {
+		this.nhanVienToiDa = nhanVienToiDa;
+	}
+
+	@Column(name = "LuongCaTheoNgay", nullable = false, scale = 4)
+	public int getLuongCaTheoNgay() {
+		return this.luongCaTheoNgay;
+	}
+
+	public void setLuongCaTheoNgay(int luongCaTheoNgay) {
+		this.luongCaTheoNgay = luongCaTheoNgay;
+	}
+
 	@Column(name = "Status", nullable = false)
 	public boolean isStatus() {
 		return this.status;
@@ -144,24 +174,6 @@ public class Calamviec implements java.io.Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
-	}
-
-	@Column(name = "NhanVienToiThieu", nullable = false)
-	public int getNhanVienToiThieu() {
-		return this.nhanVienToiThieu;
-	}
-
-	public void setNhanVienToiThieu(int nhanVienToiThieu) {
-		this.nhanVienToiThieu = nhanVienToiThieu;
-	}
-
-	@Column(name = "NhanVienToiDa", nullable = false)
-	public int getNhanVienToiDa() {
-		return this.nhanVienToiDa;
-	}
-
-	public void setNhanVienToiDa(int nhanVienToiDa) {
-		this.nhanVienToiDa = nhanVienToiDa;
 	}
 
 }

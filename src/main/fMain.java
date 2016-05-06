@@ -52,7 +52,8 @@ private JPanel contentPane;
 		mntmQunLNgi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				fUsers view = new fUsers();				
+				fUsers view = new fUsers();	
+				view.setLocationRelativeTo(null);
 				view.setVisible(true);
 			}
 		});
@@ -67,8 +68,9 @@ private JPanel contentPane;
 		JMenuItem mnItemViTri = new JMenuItem("V\u1ECB tr\u00ED");
 		mnItemViTri.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Má»Ÿ Danh má»¥c vá»‹ trĂ­");
-				fIndex view = new fIndex();				
+				System.out.println("Mở danh mục vị trí");
+				fIndex view = new fIndex();	
+				view.setLocationRelativeTo(null);
 				view.setVisible(true);				
 			}
 		});
@@ -77,15 +79,38 @@ private JPanel contentPane;
 		JMenuItem mntmTrnh = new JMenuItem("Tr\u00ECnh \u0111\u1ED9");
 		mntmTrnh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Má»Ÿ Danh má»¥c TrĂ¬nh Ä‘á»™");
-				fLevel view = new fLevel();				
+				System.out.println("Mở danh mục Trình Độ");
+				fLevel view = new fLevel();	
+				view.setLocationRelativeTo(null);
 				view.setVisible(true);		
 			}
 		});
 		mnDanhMc.add(mntmTrnh);
 		
 		JMenuItem mntmCaLmVic = new JMenuItem("Ca l\u00E0m vi\u1EC7c");
+		mntmCaLmVic.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Mở danh mục Ca làm việc");
+				fShift view = new fShift();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
 		mnDanhMc.add(mntmCaLmVic);
+		
+		JMenu mnNghipV = new JMenu("Nghiệp vụ");
+		menuBar.add(mnNghipV);
+		
+		JMenuItem mntmThiGianLm = new JMenuItem("Thời gian làm việc");
+		mntmThiGianLm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Mở nghiệp vụ -> Thời gian làm việc");
+				fTimeCanWork view = new fTimeCanWork();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnNghipV.add(mntmThiGianLm);
 		
 		JMenuBar menuBar_1 = new JMenuBar();
 		menuBar.add(menuBar_1);
