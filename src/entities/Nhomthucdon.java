@@ -1,7 +1,7 @@
 package entities;
 // Generated May 7, 2016 3:58:17 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,20 +17,20 @@ import javax.persistence.TemporalType;
 @Table(name = "NHOMTHUCDON", catalog = "RMS")
 public class Nhomthucdon implements java.io.Serializable {
 
-	private Serializable maNhom;
-	private Serializable tenNhom;
-	private Serializable dienGiai;
+	private String maNhom;
+	private String tenNhom;
+	private String dienGiai;
 	private boolean status;
-	private Serializable createdBy;
+	private String createdBy;
 	private Date createdDate;
-	private Serializable updatedBy;
+	private String updatedBy;
 	private Date updatedDate;
 
 	public Nhomthucdon() {
 	}
 
-	public Nhomthucdon(Serializable maNhom, Serializable tenNhom, Serializable dienGiai, boolean status,
-			Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
+	public Nhomthucdon(String maNhom, String tenNhom, String dienGiai, boolean status,
+			String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
 		this.maNhom = maNhom;
 		this.tenNhom = tenNhom;
 		this.dienGiai = dienGiai;
@@ -44,29 +44,29 @@ public class Nhomthucdon implements java.io.Serializable {
 	@Id
 
 	@Column(name = "MaNhom", unique = true, nullable = false)
-	public Serializable getMaNhom() {
+	public String getMaNhom() {
 		return this.maNhom;
 	}
 
-	public void setMaNhom(Serializable maNhom) {
+	public void setMaNhom(String maNhom) {
 		this.maNhom = maNhom;
 	}
 
 	@Column(name = "TenNhom", nullable = false)
-	public Serializable getTenNhom() {
+	public String getTenNhom() {
 		return this.tenNhom;
 	}
 
-	public void setTenNhom(Serializable tenNhom) {
+	public void setTenNhom(String tenNhom) {
 		this.tenNhom = tenNhom;
 	}
 
 	@Column(name = "DienGiai", nullable = false)
-	public Serializable getDienGiai() {
+	public String getDienGiai() {
 		return this.dienGiai;
 	}
 
-	public void setDienGiai(Serializable dienGiai) {
+	public void setDienGiai(String dienGiai) {
 		this.dienGiai = dienGiai;
 	}
 
@@ -80,11 +80,11 @@ public class Nhomthucdon implements java.io.Serializable {
 	}
 
 	@Column(name = "CreatedBy", nullable = false)
-	public Serializable getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(Serializable createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -99,11 +99,11 @@ public class Nhomthucdon implements java.io.Serializable {
 	}
 
 	@Column(name = "UpdatedBy", nullable = false)
-	public Serializable getUpdatedBy() {
+	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(Serializable updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
