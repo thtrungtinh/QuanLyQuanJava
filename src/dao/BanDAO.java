@@ -1,77 +1,59 @@
 package dao;
 
 import entities.*;
-import model.*;
 import utilities.DataService;
-
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
+import java.util.Date;
 import org.hibernate.*;
+import java.sql.*;
 
 
-public class ChamCongDAO {
-	
+
+
+public class BanDAO {
+
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	private static SqlConnection connection = new SqlConnection();
-				
+	
 	/**
-     * Load list danh sach 
+     * Load list danh sach Trinh Do
      *
-     * @return List<Chamcong>
+     * @return List<Vitri>
      */
-	public List<Chamcong> Load() {		
-			Session session = sessionFactory.openSession();
-			Transaction tx = null;
-			List<Chamcong> list = null;
-			try {
-				tx = session.beginTransaction();
-				list = session.createQuery("from Chamcong").list();
-				tx.commit();
-			} catch (HibernateException e) {
-				if (tx != null)
-					tx.rollback();
-				e.printStackTrace();
-			} finally {
-				session.close();
-			}
-			return list;
+	public List<Ban> Load() {
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		List<Ban> list = null;
+		try {
+			tx = session.beginTransaction();
+			list = session.createQuery("from Ban").list();
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return list;
 	}
 	
 	/**
-     * getlist
+     * Kiem tra ma trinh do da duoc su dung chua
      *
-     * @return list model
+     * @return error message
      */
-    public List<ChamCongModel> GetList(String maCa, String maNguoiDung, int nam, int thang) {
-        CallableStatement cstmt = null;        
-        List<ChamCongModel> list = new ArrayList<>();
+    public String CheckInsert(String key) {
+        CallableStatement cstmt = null;
+        String errMessage = "";
+
         try {
             cstmt = connection.getConnection().prepareCall(
-                    " exec dbo.CHAMCONG_GetList @MaCa = '"+ maCa +"', @MaNguoiDung = '" + maNguoiDung + "', @Nam = "+ nam +", @Thang = " + thang );  
-            ResultSet result = cstmt.executeQuery();
-            while (result.next()) 
-            {
-            	ChamCongModel model = new ChamCongModel();
-            	model.setMaChamCong(result.getInt("MaChamCong"));
-				model.setMaCa(result.getString("MaCa"));
-				model.setMaNguoiDung(result.getString("MaNguoiDung"));
-				model.setNgay(result.getInt("Ngay"));
-				model.setThang(result.getInt("Thang"));
-				model.setNam(result.getInt("Nam"));
-				model.setDienGiai(result.getString("DienGiai"));
-				
-				model.setCreatedBy(result.getString("CreatedBy"));
-				model.setCreatedDate(result.getDate("CreatedDate"));
-				model.setUpdatedBy(result.getString("UpdatedBy"));
-				model.setUpdatedDate(result.getDate("UpdatedDate"));
-				model.setTenCa(result.getString("TenCa"));
-				model.setTenNguoiDung(result.getString("TenNguoiDung"));
-				
-				list.add(model);
-			}
-            
+                    "{call dbo.BAN_CheckInsert(?,?)}");
+            cstmt.setString("MaBan", key);
+            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
+            cstmt.execute();
+            errMessage = cstmt.getNString("Message");
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         } finally {
@@ -83,15 +65,15 @@ public class ChamCongDAO {
                 }
             }
         }
-        return list;
+        return errMessage;
     }
-	    
+        
     /**
      * Them
      *
      */
     
-    public String Insert(Chamcong entity) {
+    public String Insert(Ban entity) {
 		String errMesage = "";
     	Session session = sessionFactory.openSession();
 		Transaction tx = null;
@@ -114,18 +96,18 @@ public class ChamCongDAO {
 	}
     
     /**
-     * Kiem tra ma duoc cap nhat
+     * Kiem tra ma trinh do duoc cap nhat
      *
      * @return error message
      */
-    public String CheckEdit(int maChamCong) {
+    public String CheckEdit(String key) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.CHAMCONG_CheckEdit(?,?)}");
-            cstmt.setInt("MaChamCong", maChamCong);
+                    "{call dbo.BAN_CheckEdit(?,?)}");
+            cstmt.setString("MaBan", key);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -144,28 +126,22 @@ public class ChamCongDAO {
     }
     
     /**
-     * cap nhat 
+     * cap nhat sua trinh do
      *
      * 
      */
     
-	public void UpdateData(int key, String maCa, String maNguoiDung, int ngay, int thang, int nam, String dienGiai) {
+	public void UpdateData(String key, String tenBan, String dienGiai, boolean status) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		try {
-			tx = session.beginTransaction();	
-			Chamcong entity = (Chamcong) session.get(Chamcong.class, key);
-			
-			entity.setMaCa(maCa);
-			entity.setMaNguoiDung(maNguoiDung);
-			entity.setNgay(ngay);
-			entity.setThang(thang);
-			entity.setNam(nam);
-			entity.setDienGiai(dienGiai);			
-						
+			tx = session.beginTransaction();
+			Ban entity = (Ban) session.get(Ban.class, key);
+			entity.setTenBan(tenBan);
+			entity.setDienGiai(dienGiai);
+			entity.setStatus(status);
 			entity.setUpdatedBy(DataService.GetUserID());
 			entity.setUpdatedDate(new Date());
-			
 			session.update(entity);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -178,18 +154,18 @@ public class ChamCongDAO {
 	}
     
     /**
-     * Kiem tra ma co dung khong
+     * Kiem tra ma trinh do co dung khong
      *
      * @return error message
      */
-    public String CheckDelete(int key) {
+    public String CheckDelete(String key) {
         CallableStatement cstmt = null;
         String errMessage = "";
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.CHAMCONG_CheckDelete(?,?)}");
-            cstmt.setInt("MaChamCong", key);
+                    "{call dbo.BAN_CheckDelete(?,?)}");
+            cstmt.setString("MaBan", key);
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
             cstmt.execute();
             errMessage = cstmt.getNString("Message");
@@ -208,16 +184,16 @@ public class ChamCongDAO {
     }
     
     /**
-     * Xoa 
+     * Xoa trinh do
      *
      */
-    public void Delete(int key) {
+    public void Delete(String key) {
 
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
         	tx = session.beginTransaction();
-        	Chamcong entity = (Chamcong) session.get(Chamcong.class, key);
+            Ban entity = (Ban) session.get(Ban.class, key);
             session.delete(entity);
             tx.commit();
         } catch (HibernateException  e) {
@@ -230,5 +206,4 @@ public class ChamCongDAO {
         }
 
    }
-	
 }

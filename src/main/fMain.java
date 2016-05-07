@@ -10,6 +10,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import utilities.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class fMain extends JFrame {
 
@@ -38,6 +40,12 @@ private JPanel contentPane;
 	 * Create the frame.
 	 */
 	public fMain() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				System.out.println("Thoát màn hình chính");
+			}
+		});
 		setTitle("Qu\u1EA3n l\u00FD qu\u00E1n \u0103n - " + DataService.GetUserName());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 708, 534);
@@ -97,6 +105,17 @@ private JPanel contentPane;
 			}
 		});
 		mnDanhMc.add(mntmCaLmVic);
+		
+		JMenuItem mntmBn = new JMenuItem("Bàn");
+		mntmBn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Mở danh mục Bàn");
+				fTable view = new fTable();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnDanhMc.add(mntmBn);
 		
 		JMenu mnNghipV = new JMenu("Nghiệp vụ");
 		menuBar.add(mnNghipV);

@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//src/dao/BanDAO.java=UTF-8
 encoding//src/dao/CaLamViecDAO.java=UTF-8
 encoding//src/dao/ChamCongDAO.java=UTF-8
 encoding//src/dao/NguoiDungDAO.java=UTF-8
@@ -9,6 +10,7 @@ encoding//src/main/fLevel.java=UTF-8
 encoding//src/main/fLogin.java=UTF-8
 encoding//src/main/fMain.java=UTF-8
 encoding//src/main/fShift.java=UTF-8
+encoding//src/main/fTable.java=UTF-8
 encoding//src/main/fTimeCanWork.java=UTF-8
 encoding//src/main/fTimekeeping.java=UTF-8
 encoding//src/main/fUsers.java=UTF-8

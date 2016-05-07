@@ -22,5 +22,10 @@
   <mapping class="entities.Vitri"/>
   <mapping class="entities.Nguoidung"/>
   <mapping class="entities.Chamcong"/>
+  <mapping class="entities.Ban"/>
+  <mapping class="entities.Nhomthucdon"/>
+  <mapping class="entities.Thucdon"/>
+  <mapping class="entities.Hoadon"/>
+  <mapping class="entities.Chitiethoadon"/>
  </session-factory>
 </hibernate-configuration>
