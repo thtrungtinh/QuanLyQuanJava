@@ -112,6 +112,17 @@ private JPanel contentPane;
 		});
 		mnNghipV.add(mntmThiGianLm);
 		
+		JMenuItem mntmChmCng = new JMenuItem("Chấm công");
+		mntmChmCng.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Mở nghiệp vụ -> Thời gian làm việc");
+				fTimekeeping view = new fTimekeeping();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnNghipV.add(mntmChmCng);
+		
 		JMenuBar menuBar_1 = new JMenuBar();
 		menuBar.add(menuBar_1);
 		contentPane = new JPanel();

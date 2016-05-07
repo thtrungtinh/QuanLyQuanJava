@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
                                          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
- <session-factory>
+ <session-factory >
   <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
   <property name="hibernate.connection.password">tinh12</property>
   <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=RMS</property>
@@ -20,6 +20,7 @@
   <mapping class="entities.ThoigiancothelamviecId"/>
   <mapping class="entities.Trinhdo"/>
   <mapping class="entities.Vitri"/>
-  <mapping class="entities.Nguoidung"/>  
+  <mapping class="entities.Nguoidung"/>
+  <mapping class="entities.Chamcong"/>
  </session-factory>
 </hibernate-configuration>

@@ -18,25 +18,6 @@ public class ThoiGianCoTheLamViecDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	private static SqlConnection connection = new SqlConnection();
-	
-	/**
-     * Load Nguoidung theo ma nguoi dung va mat khau 
-     *
-     * @return Nguoidung entities
-     */
-	public Nguoidung GetListID(String maNguoiDung, String matKhau) {
-		try {			
-			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
-				sessionFactory.getCurrentSession().getTransaction().begin();			
-			return (Nguoidung) sessionFactory.getCurrentSession()
-                .createSQLQuery(" exec NGUOIDUNG_GetListID @MaNguoiDung = '" + maNguoiDung +"' , @MatKhau='"+ matKhau +"'")
-                .addEntity(Nguoidung.class).uniqueResult();                  
-		} 
-		catch (Exception e) {
-			System.out.println("Error: " + e);
-			return null;
-		}
-	}
 		
 		
 	/**
@@ -87,6 +68,7 @@ public class ThoiGianCoTheLamViecDAO {
 				model.setUpdatedDate(result.getDate("UpdatedDate"));
 				model.setTenCa(result.getString("TenCa"));
 				model.setTenNguoiDung(result.getString("TenNguoiDung"));
+				
 				list.add(model);
 			}
             
@@ -115,7 +97,7 @@ public class ThoiGianCoTheLamViecDAO {
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckInsert(?,?)}");
+                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckInsert(?,?,?)}");
             cstmt.setString("MaCa", key.getMaCa());
             cstmt.setString("MaNguoiDung", key.getMaNguoiDung());
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
@@ -173,7 +155,7 @@ public class ThoiGianCoTheLamViecDAO {
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckEdit(?,?)}");
+                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckEdit(?,?,?)}");
             cstmt.setString("MaCa", key.getMaCa());
             cstmt.setString("MaNguoiDung", key.getMaNguoiDung());
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
@@ -234,7 +216,7 @@ public class ThoiGianCoTheLamViecDAO {
 
         try {
             cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckDelete(?,?)}");
+                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckDelete(?,?,?)}");
             cstmt.setString("MaCa", key.getMaCa());
             cstmt.setString("MaNguoiDung", key.getMaNguoiDung());
             cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
