@@ -117,6 +117,28 @@ private JPanel contentPane;
 		});
 		mnDanhMc.add(mntmBn);
 		
+		JMenuItem mntmNhmThcn = new JMenuItem("Nhóm thực đơn");
+		mntmNhmThcn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Mở danh mục Nhóm thực đơn");
+				fGroupMenu view = new fGroupMenu();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnDanhMc.add(mntmNhmThcn);
+		
+		JMenuItem mntmThcn = new JMenuItem("Thực đơn");
+		mntmThcn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Mở danh mục thực đơn");
+				fMenu view = new fMenu();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnDanhMc.add(mntmThcn);
+		
 		JMenu mnNghipV = new JMenu("Nghiệp vụ");
 		menuBar.add(mnNghipV);
 		

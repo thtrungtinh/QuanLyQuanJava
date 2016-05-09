@@ -1,6 +1,9 @@
 package utilities;
 
 
+import java.awt.Image;
+import java.awt.Label;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.*;
@@ -131,6 +134,37 @@ public class DataService {
 		return numberFormatter;
 	}
 	
+	// Methode to resize imageIcon with the same size of a Jlabel
+    public static ImageIcon ResizeImage(String ImagePath, JLabel lbl)
+    {
+        ImageIcon MyImage = new ImageIcon(ImagePath);
+        Image img = MyImage.getImage();
+        Image newImg = img.getScaledInstance(lbl.getWidth(), lbl.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon(newImg);
+        return image;
+    }
 	
+    public static byte [] ConvertImageToByte(String path) throws FileNotFoundException, IOException 
+    {
+    	 File file = new File(path);    	 
+         FileInputStream fis = new FileInputStream(file);
+         //create FileInputStream which obtains input bytes from a file in a file system
+         //FileInputStream is meant for reading streams of raw bytes such as image data. For reading streams of characters, consider using FileReader.
+  
+         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+         byte[] buf = new byte[2048];
+         try {
+             for (int readNum; (readNum = fis.read(buf)) != -1;) {
+                 //Writes to this byte array output stream
+                 bos.write(buf, 0, readNum); 
+                 System.out.println("read " + readNum + " bytes,");
+             }
+         } catch (IOException ex) {
+             
+         }
+  
+         byte[] bytes = bos.toByteArray();  
+         return bytes;
+    }
 
 }

@@ -181,7 +181,7 @@ public class fGroupMenu extends JFrame {
 			}							
 			
 		});
-		setTitle("Bàn");
+		setTitle("Nhóm thực đơn");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 673, 294);
 		contentPane = new JPanel();
@@ -195,7 +195,7 @@ public class fGroupMenu extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Mã bàn");
+		JLabel lblNewLabel = new JLabel("Mã nhóm");
 		lblNewLabel.setBounds(21, 29, 72, 14);
 		panel.add(lblNewLabel);
 		
@@ -204,7 +204,7 @@ public class fGroupMenu extends JFrame {
 		panel.add(txtMa);
 		txtMa.setColumns(10);
 		
-		JLabel lblVTr = new JLabel("Tên bàn");
+		JLabel lblVTr = new JLabel("Tên nhóm");
 		lblVTr.setBounds(21, 61, 46, 14);
 		panel.add(lblVTr);
 		

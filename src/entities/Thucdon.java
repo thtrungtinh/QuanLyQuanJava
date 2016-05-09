@@ -1,7 +1,7 @@
 package entities;
-// Generated May 7, 2016 3:58:17 PM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 9, 2016 9:46:32 AM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,26 +17,28 @@ import javax.persistence.TemporalType;
 @Table(name = "THUCDON", catalog = "RMS")
 public class Thucdon implements java.io.Serializable {
 
-	private Serializable maThucDon;
-	private Serializable tenThucDon;
+	private String maThucDon;
+	private String tenThucDon;
 	private byte[] hinhAnh;
-	private Serializable dienGiai;
+	private String dienGiai;
 	private int gia;
+	private String maNhom;
 	private boolean status;
-	private Serializable createdBy;
+	private String createdBy;
 	private Date createdDate;
-	private Serializable updatedBy;
+	private String updatedBy;
 	private Date updatedDate;
 
 	public Thucdon() {
 	}
 
-	public Thucdon(Serializable maThucDon, Serializable tenThucDon, Serializable dienGiai, int gia, boolean status,
-			Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
+	public Thucdon(String maThucDon, String tenThucDon, String dienGiai, int gia, String maNhom,
+			boolean status, String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
 		this.maThucDon = maThucDon;
 		this.tenThucDon = tenThucDon;
 		this.dienGiai = dienGiai;
 		this.gia = gia;
+		this.maNhom = maNhom;
 		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
@@ -44,13 +46,15 @@ public class Thucdon implements java.io.Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public Thucdon(Serializable maThucDon, Serializable tenThucDon, byte[] hinhAnh, Serializable dienGiai, int gia,
-			boolean status, Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
+	public Thucdon(String maThucDon, String tenThucDon, byte[] hinhAnh, String dienGiai, int gia,
+			String maNhom, boolean status, String createdBy, Date createdDate, String updatedBy,
+			Date updatedDate) {
 		this.maThucDon = maThucDon;
 		this.tenThucDon = tenThucDon;
 		this.hinhAnh = hinhAnh;
 		this.dienGiai = dienGiai;
 		this.gia = gia;
+		this.maNhom = maNhom;
 		this.status = status;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
@@ -61,24 +65,24 @@ public class Thucdon implements java.io.Serializable {
 	@Id
 
 	@Column(name = "MaThucDon", unique = true, nullable = false)
-	public Serializable getMaThucDon() {
+	public String getMaThucDon() {
 		return this.maThucDon;
 	}
 
-	public void setMaThucDon(Serializable maThucDon) {
+	public void setMaThucDon(String maThucDon) {
 		this.maThucDon = maThucDon;
 	}
 
 	@Column(name = "TenThucDon", nullable = false)
-	public Serializable getTenThucDon() {
+	public String getTenThucDon() {
 		return this.tenThucDon;
 	}
 
-	public void setTenThucDon(Serializable tenThucDon) {
+	public void setTenThucDon(String tenThucDon) {
 		this.tenThucDon = tenThucDon;
 	}
 
-	@Column(name = "HinhAnh")
+	@Column(name = "HinhAnh", nullable = true)
 	public byte[] getHinhAnh() {
 		return this.hinhAnh;
 	}
@@ -88,11 +92,11 @@ public class Thucdon implements java.io.Serializable {
 	}
 
 	@Column(name = "DienGiai", nullable = false)
-	public Serializable getDienGiai() {
+	public String getDienGiai() {
 		return this.dienGiai;
 	}
 
-	public void setDienGiai(Serializable dienGiai) {
+	public void setDienGiai(String dienGiai) {
 		this.dienGiai = dienGiai;
 	}
 
@@ -105,6 +109,15 @@ public class Thucdon implements java.io.Serializable {
 		this.gia = gia;
 	}
 
+	@Column(name = "MaNhom", nullable = false)
+	public String getMaNhom() {
+		return this.maNhom;
+	}
+
+	public void setMaNhom(String maNhom) {
+		this.maNhom = maNhom;
+	}
+
 	@Column(name = "Status", nullable = false)
 	public boolean isStatus() {
 		return this.status;
@@ -115,11 +128,11 @@ public class Thucdon implements java.io.Serializable {
 	}
 
 	@Column(name = "CreatedBy", nullable = false)
-	public Serializable getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(Serializable createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -134,11 +147,11 @@ public class Thucdon implements java.io.Serializable {
 	}
 
 	@Column(name = "UpdatedBy", nullable = false)
-	public Serializable getUpdatedBy() {
+	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(Serializable updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
