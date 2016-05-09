@@ -93,13 +93,10 @@ public class fMenu extends JFrame  {
     	
         //Set Column Title
     	Vector column = new Vector();
-        column.add("Mã NV");
-        column.add("Tên NV");
-        column.add("Nam");
-        column.add("Ngày sinh");
-        column.add("CMND");
-        column.add("Điện thoại");
-        column.add("Địa chỉ");        
+        column.add("Mã TD");
+        column.add("Tên thực đơn");
+        column.add("Diễn giải");
+        column.add("Giá");        
         column.add("Sử dụng");
         model.setColumnIdentifiers(column);
         listThucDon = dao.Load();
@@ -116,16 +113,14 @@ public class fMenu extends JFrame  {
         }
         
         tbl.setModel(model);
-        DataService.SetColumnTableToCheckBox(tbl, 2);
-        DataService.SetColumnTableToCheckBox(tbl, 7);
-        DataService.SetWidhtColumnTable(tbl, 0, 140);
+        DataService.SetColumnTableToCheckBox(tbl, 4);
+        
+        DataService.SetWidhtColumnTable(tbl, 0, 110);
         DataService.SetWidhtColumnTable(tbl, 1, 200);
-        DataService.SetWidhtColumnTable(tbl, 2, 80);
-        DataService.SetWidhtColumnTable(tbl, 3, 140);
-        DataService.SetWidhtColumnTable(tbl, 4, 140);
-        DataService.SetWidhtColumnTable(tbl, 5, 140);
-        DataService.SetWidhtColumnTable(tbl, 6, 140);
-        DataService.SetWidhtColumnTable(tbl, 7, 80);
+        DataService.SetWidhtColumnTable(tbl, 2, 200);
+        DataService.SetWidhtColumnTable(tbl, 3, 110);
+        DataService.SetWidhtColumnTable(tbl, 4, 80);
+        
         
     	System.out.println("--- Success ---");
 	} 
