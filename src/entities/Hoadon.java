@@ -1,7 +1,7 @@
 package entities;
-// Generated May 7, 2016 3:58:17 PM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 10, 2016 4:25:58 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,19 +17,19 @@ import javax.persistence.TemporalType;
 @Table(name = "HOADON", catalog = "RMS")
 public class Hoadon implements java.io.Serializable {
 
-	private Serializable maHd;
-	private int maban;
+	private String maHd;
+	private String maban;
 	private int status;
-	private Serializable createdBy;
+	private String createdBy;
 	private Date createdDate;
-	private Serializable updatedBy;
+	private String updatedBy;
 	private Date updatedDate;
 
 	public Hoadon() {
 	}
 
-	public Hoadon(Serializable maHd, int maban, int status, Serializable createdBy, Date createdDate,
-			Serializable updatedBy, Date updatedDate) {
+	public Hoadon(String maHd, String maban, int status, String createdBy, Date createdDate,
+			String updatedBy, Date updatedDate) {
 		this.maHd = maHd;
 		this.maban = maban;
 		this.status = status;
@@ -42,20 +42,20 @@ public class Hoadon implements java.io.Serializable {
 	@Id
 
 	@Column(name = "MaHD", unique = true, nullable = false)
-	public Serializable getMaHd() {
+	public String getMaHd() {
 		return this.maHd;
 	}
 
-	public void setMaHd(Serializable maHd) {
+	public void setMaHd(String maHd) {
 		this.maHd = maHd;
 	}
 
 	@Column(name = "Maban", nullable = false)
-	public int getMaban() {
+	public String getMaban() {
 		return this.maban;
 	}
 
-	public void setMaban(int maban) {
+	public void setMaban(String maban) {
 		this.maban = maban;
 	}
 
@@ -69,11 +69,11 @@ public class Hoadon implements java.io.Serializable {
 	}
 
 	@Column(name = "CreatedBy", nullable = false)
-	public Serializable getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(Serializable createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -88,11 +88,11 @@ public class Hoadon implements java.io.Serializable {
 	}
 
 	@Column(name = "UpdatedBy", nullable = false)
-	public Serializable getUpdatedBy() {
+	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(Serializable updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

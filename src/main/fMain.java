@@ -164,6 +164,17 @@ private JPanel contentPane;
 		});
 		mnNghipV.add(mntmChmCng);
 		
+		JMenuItem mntmBnHng = new JMenuItem("Bán hàng");
+		mntmBnHng.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Mở nghiệp vụ -> Bán hàng");
+				fSell view = new fSell();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnNghipV.add(mntmBnHng);
+		
 		JMenuBar menuBar_1 = new JMenuBar();
 		menuBar.add(menuBar_1);
 		contentPane = new JPanel();

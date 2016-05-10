@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,12 +61,12 @@ public class fMenu extends JFrame  {
 	private JLabel lblHinhAnh;
 	
 	private JComboBox cboNhom;
-	
-	private List<Vitri> listVitri;
+	private boolean isDeleteImg = false;
+		
 	private List<Nhomthucdon> listNhomThucDon;
 	List<Thucdon> listThucDon;	
-	List<NguoiDungModel> listThucDonModel;
 	
+	private String getPathImage = "";
 	
 		
 	//Load Combobox Nhom thuc don
@@ -138,7 +139,7 @@ public class fMenu extends JFrame  {
 	}
 	
     //Load Table click row
-	private void ClickRowTable(int index) {
+	private void ClickRowTable(int index) throws IOException {
 		Thucdon entity = listThucDon.get(index);
 		txtMaThucDon.setText(entity.getMaThucDon());
 		txtTenThucDon.setText(entity.getTenThucDon());
@@ -146,10 +147,9 @@ public class fMenu extends JFrame  {
 		txtGia.setValue(entity.getGia());
 		txtDienGiai.setText(entity.getDienGiai());
 		chkStatus.setSelected(entity.isStatus());
+		lblHinhAnh.setIcon(DataService.ConvertByteToImage(entity.getHinhAnh(), lblHinhAnh.getWidth(), lblHinhAnh.getHeight()));
 		
-		
-		int intdexThucDon = GetIndexThucDon(listNhomThucDon, entity.getMaNhom());
-		
+		int intdexThucDon = GetIndexThucDon(listNhomThucDon, entity.getMaNhom());	
 		
 		cboNhom.setSelectedIndex(intdexThucDon);
 	}
@@ -161,12 +161,20 @@ public class fMenu extends JFrame  {
     		ThucDonDAO dao = new ThucDonDAO();
 			errMessage = dao.CheckEdit(txtMaThucDon.getText());
 			if(errMessage.length()<1)
-			{				
+			{			
+				
+				byte[] hinhAnh;
 				String key = txtMaThucDon.getText();
 				String ten = txtTenThucDon.getText();
 				int gia =  (int)txtGia.getValue();
-				
-				byte[] hinhAnh = null;
+				if(getPathImage.equals("")&&isDeleteImg)
+				{
+					hinhAnh = null;
+				}
+				else 
+				{
+					hinhAnh = DataService.ConvertImageToByte(getPathImage);				
+				}
 				String dienGiai = txtDienGiai.getText();
 				boolean status = chkStatus.isSelected();			
 								
@@ -216,7 +224,7 @@ public class fMenu extends JFrame  {
 				entity.setGia((int) txtGia.getValue());
 				entity.setDienGiai(txtDienGiai.getText());
 				entity.setStatus(chkStatus.isSelected());
-				entity.setHinhAnh(null);
+				entity.setHinhAnh(DataService.ConvertImageToByte(getPathImage));
 				
 				entity.setMaNhom(listNhomThucDon.get(cboNhom.getSelectedIndex()).getMaNhom());				
 				
@@ -227,6 +235,7 @@ public class fMenu extends JFrame  {
 						
 				ShowTableData();
 				errMessage = dao.Insert(entity);
+				getPathImage = "";
 				
 			} 
 			catch (Exception e) 
@@ -343,35 +352,27 @@ public class fMenu extends JFrame  {
 		panel.add(cboNhom);
 		
 		JButton cboLoadImage = new JButton("Hình");
-		cboLoadImage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser file = new JFileChooser();
-		          file.setCurrentDirectory(new File(System.getProperty("user.home")));
-		          //filter the files
-		          FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg","gif","png");
-		          file.addChoosableFileFilter(filter);
-		          int result = file.showSaveDialog(null);
-		           //if the user click on save in Jfilechooser
-		          if(result == JFileChooser.APPROVE_OPTION){
-		              File selectedFile = file.getSelectedFile();
-		              String path = selectedFile.getAbsolutePath();
-		              lblHinhAnh.setIcon(DataService.ResizeImage(path, lblHinhAnh));
-		          }
-			}
-		});
+		
 		cboLoadImage.setMargin(new Insets(2, 5, 2, 5));
-		cboLoadImage.setBounds(21, 109, 64, 23);
+		cboLoadImage.setBounds(21, 94, 64, 23);
 		panel.add(cboLoadImage);
 		
 		lblHinhAnh = new JLabel("Loading ...");
 		lblHinhAnh.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblHinhAnh.setHorizontalAlignment(SwingConstants.CENTER);
-		lblHinhAnh.setBounds(118, 87, 106, 70);
+		lblHinhAnh.setBounds(126, 87, 98, 70);
 		panel.add(lblHinhAnh);
 		
 		txtGia = new JFormattedTextField(DataService.SetTextFieldIntegerFormat());
+		txtGia.setText("0");
 		txtGia.setBounds(97, 168, 159, 20);
 		panel.add(txtGia);
+		
+		JButton btnClearImg = new JButton("Xóa hình");
+		
+		btnClearImg.setMargin(new Insets(2, 0, 2, 2));
+		btnClearImg.setBounds(21, 128, 64, 23);
+		panel.add(btnClearImg);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Danh s\u00E1ch", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -436,9 +437,35 @@ public class fMenu extends JFrame  {
 			public void actionPerformed(ActionEvent arg0) {
 				String errMessage = EditData();
 				ShowTableData();
+				isDeleteImg = false;
 				JOptionPane.showMessageDialog(null, errMessage);
 			}
 		});	
+		
+		cboLoadImage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser file = new JFileChooser();
+		          file.setCurrentDirectory(new File(System.getProperty("user.home")));
+		          //filter the files
+		          FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg","gif","png");
+		          file.addChoosableFileFilter(filter);
+		          int result = file.showSaveDialog(null);
+		           //if the user click on save in Jfilechooser
+		          if(result == JFileChooser.APPROVE_OPTION){
+		              File selectedFile = file.getSelectedFile();
+		              getPathImage = selectedFile.getAbsolutePath();
+		              lblHinhAnh.setIcon(DataService.ResizeImage(getPathImage, lblHinhAnh));
+		          }
+			}
+		});
+		
+		btnClearImg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				lblHinhAnh.setIcon(null);
+				getPathImage = "";
+				isDeleteImg = true;
+			}
+		});
 		
 	}
 }

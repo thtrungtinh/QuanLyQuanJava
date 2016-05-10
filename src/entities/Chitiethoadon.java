@@ -1,7 +1,7 @@
 package entities;
-// Generated May 7, 2016 3:58:17 PM by Hibernate Tools 5.1.0.Alpha1
+// Generated May 10, 2016 4:19:32 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,25 +18,27 @@ import javax.persistence.TemporalType;
 public class Chitiethoadon implements java.io.Serializable {
 
 	private int id;
-	private Serializable maHd;
-	private Serializable maThucDon;
-	private Serializable ghiChu;
+	private String maHd;
+	private String maThucDon;
+	private String ghiChu;
+	private int soLuong;
 	private int gia;
 	private boolean status;
-	private Serializable createdBy;
+	private String createdBy;
 	private Date createdDate;
-	private Serializable updatedBy;
+	private String updatedBy;
 	private Date updatedDate;
 
 	public Chitiethoadon() {
 	}
 
-	public Chitiethoadon(int id, Serializable maHd, Serializable maThucDon, Serializable ghiChu, int gia,
-			boolean status, Serializable createdBy, Date createdDate, Serializable updatedBy, Date updatedDate) {
+	public Chitiethoadon(int id, String maHd, String maThucDon, String ghiChu, int soLuong, int gia,
+			boolean status, String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
 		this.id = id;
 		this.maHd = maHd;
 		this.maThucDon = maThucDon;
 		this.ghiChu = ghiChu;
+		this.soLuong = soLuong;
 		this.gia = gia;
 		this.status = status;
 		this.createdBy = createdBy;
@@ -57,30 +59,39 @@ public class Chitiethoadon implements java.io.Serializable {
 	}
 
 	@Column(name = "MaHD", nullable = false)
-	public Serializable getMaHd() {
+	public String getMaHd() {
 		return this.maHd;
 	}
 
-	public void setMaHd(Serializable maHd) {
+	public void setMaHd(String maHd) {
 		this.maHd = maHd;
 	}
 
 	@Column(name = "MaThucDon", nullable = false)
-	public Serializable getMaThucDon() {
+	public String getMaThucDon() {
 		return this.maThucDon;
 	}
 
-	public void setMaThucDon(Serializable maThucDon) {
+	public void setMaThucDon(String maThucDon) {
 		this.maThucDon = maThucDon;
 	}
 
 	@Column(name = "GhiChu", nullable = false)
-	public Serializable getGhiChu() {
+	public String getGhiChu() {
 		return this.ghiChu;
 	}
 
-	public void setGhiChu(Serializable ghiChu) {
+	public void setGhiChu(String ghiChu) {
 		this.ghiChu = ghiChu;
+	}
+
+	@Column(name = "SoLuong", nullable = false)
+	public int getSoLuong() {
+		return this.soLuong;
+	}
+
+	public void setSoLuong(int soLuong) {
+		this.soLuong = soLuong;
 	}
 
 	@Column(name = "Gia", nullable = false)
@@ -102,11 +113,11 @@ public class Chitiethoadon implements java.io.Serializable {
 	}
 
 	@Column(name = "CreatedBy", nullable = false)
-	public Serializable getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(Serializable createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -121,11 +132,11 @@ public class Chitiethoadon implements java.io.Serializable {
 	}
 
 	@Column(name = "UpdatedBy", nullable = false)
-	public Serializable getUpdatedBy() {
+	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(Serializable updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

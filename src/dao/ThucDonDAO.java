@@ -141,8 +141,7 @@ public class ThucDonDAO {
 			tx = session.beginTransaction();	
 			Thucdon entity = (Thucdon) session.get(Thucdon.class, key);
 			
-			entity.setTenThucDon(ten);
-			entity.setHinhAnh(hinhAnh);
+			entity.setTenThucDon(ten);			
 			entity.setDienGiai(dienGiai);
 			entity.setGia(gia);			
 			entity.setStatus(status);
@@ -150,6 +149,9 @@ public class ThucDonDAO {
 						
 			entity.setUpdatedBy(DataService.GetUserID());
 			entity.setUpdatedDate(new Date());
+			
+			
+			entity.setHinhAnh(hinhAnh);
 			
 			session.update(entity);
 			tx.commit();
