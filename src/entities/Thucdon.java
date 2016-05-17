@@ -32,19 +32,7 @@ public class Thucdon implements java.io.Serializable {
 	public Thucdon() {
 	}
 
-	public Thucdon(String maThucDon, String tenThucDon, String dienGiai, int gia, String maNhom,
-			boolean status, String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
-		this.maThucDon = maThucDon;
-		this.tenThucDon = tenThucDon;
-		this.dienGiai = dienGiai;
-		this.gia = gia;
-		this.maNhom = maNhom;
-		this.status = status;
-		this.createdBy = createdBy;
-		this.createdDate = createdDate;
-		this.updatedBy = updatedBy;
-		this.updatedDate = updatedDate;
-	}
+	
 
 	public Thucdon(String maThucDon, String tenThucDon, byte[] hinhAnh, String dienGiai, int gia,
 			String maNhom, boolean status, String createdBy, Date createdDate, String updatedBy,

@@ -174,8 +174,8 @@ public class fShift extends JFrame {
 				Date ketThuc = (Date)speKetThuc.getValue();
 				entity.setMaCa(txtMaCa.getText());
 				entity.setTenCa(txtTenCa.getText());
-				entity.setBatDau(new java.sql.Timestamp(batDau.getTime()));
-				entity.setKetThuc(new java.sql.Timestamp(ketThuc.getTime()));
+				entity.setBatDau(new java.sql.Time(batDau.getTime()));
+				entity.setKetThuc(new java.sql.Time(ketThuc.getTime()));
 				entity.setNhanVienToiThieu((int)txtNhanVienToiThieu.getValue());
 				entity.setNhanVienToiDa((int)txtNhanVienToiDa.getValue());
 				entity.setLuongCaTheoNgay((int)txtLuongCaTheoNgay.getValue());
@@ -348,14 +348,17 @@ public class fShift extends JFrame {
 		scrollPane.setViewportView(tbl);		
 		
 		txtNhanVienToiThieu = new JFormattedTextField(DataService.SetTextFieldIntegerFormat());
+		txtNhanVienToiThieu.setText("0");
 		txtNhanVienToiThieu.setBounds(91, 196, 72, 20);
 		panel.add(txtNhanVienToiThieu);
 		
 		txtNhanVienToiDa = new JFormattedTextField(DataService.SetTextFieldIntegerFormat());
+		txtNhanVienToiDa.setText("0");
 		txtNhanVienToiDa.setBounds(192, 196, 69, 20);
 		panel.add(txtNhanVienToiDa);
 		
 		txtLuongCaTheoNgay = new JFormattedTextField(DataService.SetTextFieldIntegerFormat());
+		txtLuongCaTheoNgay.setText("0");
 		txtLuongCaTheoNgay.setBounds(91, 224, 170, 20);
 		panel.add(txtLuongCaTheoNgay);
 		

@@ -3,18 +3,19 @@
                                          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
  <session-factory >
-  <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-  <property name="hibernate.connection.password">tinh12</property>
-  <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=RMS</property>
-  <property name="hibernate.connection.username">sa</property>
-  <property name="hibernate.default_schema">dbo</property>
-  <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
+  <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+  <property name="connection.url">jdbc:mysql://localhost:3306/rms?UseUnicode=true&amp;characterEncoding=utf8</property>
+    
+  <property name="hibernate.connection.username">root</property>
+  <property name="hibernate.connection.password"></property>
+  <property name="hbm2ddl.auto">update</property>   
+  <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
   <property name="hibernate.current_session_context_class">thread</property>
   <property name="hibernate.show_sql">true</property>
   <property name="hibernate.format_sql">true</property>
   <property name="hibernate.connection.pool_size">1</property>
-  <mapping class="entities.Bangluong"/>
-  <mapping class="entities.BangluongId"/>
+  <!--  <mapping class="entities.Bangluong"/>
+  <mapping class="entities.BangluongId"/> -->
   <mapping class="entities.Calamviec"/>
   <mapping class="entities.Thoigiancothelamviec"/>
   <mapping class="entities.ThoigiancothelamviecId"/>

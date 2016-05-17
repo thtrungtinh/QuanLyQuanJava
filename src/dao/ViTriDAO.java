@@ -13,7 +13,7 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 public class ViTriDAO {
 
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	
 	
 	/**
      * Load list danh sach vi tri 
@@ -43,28 +43,23 @@ public class ViTriDAO {
      *
      * @return error message
      */
-    public String CheckInsert(String maViTri) {
-        CallableStatement cstmt = null;
+    public String CheckInsert(String maViTri) {        
         String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckInsert(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Vitri entity = (Vitri) sessionFactory.getCurrentSession()
+                .createQuery(" from Vitri where MaViTri = '" + maViTri +"'")
+                .uniqueResult();    
+			if(entity != null)
+			{
+				errMessage = "Mã này đã được sử dụng, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		}
         return errMessage;
     }
     
@@ -73,27 +68,22 @@ public class ViTriDAO {
      *
      * @return error message
      */
-    public String CheckEdit(String maViTri) {
-        CallableStatement cstmt = null;
+    public String CheckEdit(String maViTri) {        
         String errMessage = "";
-
         try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckEdit(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Vitri entity = (Vitri) sessionFactory.getCurrentSession()
+                .createQuery(" from Vitri where MaViTri = '" + maViTri +"'")
+                .uniqueResult();    
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+            
         }
         return errMessage;
     }
@@ -131,27 +121,23 @@ public class ViTriDAO {
      *
      * @return error message
      */
-    public String CheckDelete(String maViTri) {
-        CallableStatement cstmt = null;
+    public String CheckDelete(String maViTri) {        
         String errMessage = "";
 
         try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.VITRI_CheckDelete(?,?)}");
-            cstmt.setString("MaViTri", maViTri);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Vitri entity = (Vitri) sessionFactory.getCurrentSession()
+                .createQuery(" from Vitri where MaViTri = '" + maViTri +"'")
+                .uniqueResult();    
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể xóa !";
+			}
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+            
         }
         return errMessage;
     }

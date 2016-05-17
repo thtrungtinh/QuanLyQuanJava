@@ -283,9 +283,8 @@ public class fUsers extends JFrame  {
 				entity.setUpdatedBy(DataService.GetUserID());
 				entity.setCreatedBy(DataService.GetUserID());
 				entity.setUpdatedDate(currentDate);
-				entity.setCreatedDate(currentDate);
-						
-				ShowTableData();
+				entity.setCreatedDate(currentDate);						
+				
 				errMessage = dao.Insert(entity);
 				
 			} 

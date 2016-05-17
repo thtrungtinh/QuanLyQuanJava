@@ -175,6 +175,20 @@ private JPanel contentPane;
 		});
 		mnNghipV.add(mntmBnHng);
 		
+		JMenu mnBoCo = new JMenu("Báo cáo");
+		menuBar.add(mnBoCo);
+		
+		JMenuItem mntmDoanhThu = new JMenuItem("Doanh thu");
+		mntmDoanhThu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Mở báo cáo -> doanh thu");
+				fSalesReport view = new fSalesReport();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnBoCo.add(mntmDoanhThu);
+		
 		JMenuBar menuBar_1 = new JMenuBar();
 		menuBar.add(menuBar_1);
 		contentPane = new JPanel();

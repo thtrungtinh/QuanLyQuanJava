@@ -292,7 +292,7 @@ public class fTimekeeping extends JFrame  {
     	String maCa = listCa.get(cboCa.getSelectedIndex()).getMaCa();
 		String maNguoiDung = listNguoiDung.get(cboNguoiDung.getSelectedIndex()).getMaNguoiDung();	
 		
-		String errMessage = "";
+		String errMessage =dao.CheckInsert(maCa, maNguoiDung, (int)speNgay.getValue(), (int)speThang.getValue(), (int)speNam.getValue());
 		if(errMessage.length()<1)
 		{			
 			Chamcong entity = new Chamcong();

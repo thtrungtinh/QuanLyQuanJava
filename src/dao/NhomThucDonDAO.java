@@ -5,6 +5,8 @@ import utilities.DataService;
 import java.util.*;
 import java.util.Date;
 import org.hibernate.*;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
+
 import java.sql.*;
 
 
@@ -12,8 +14,8 @@ import java.sql.*;
 
 public class NhomThucDonDAO {
 
-	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();	
+	
 	
 	/**
      * Load list danh sach Trinh Do
@@ -44,28 +46,26 @@ public class NhomThucDonDAO {
      * @return error message
      */
     public String CheckInsert(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.NHOMTHUCDON_CheckInsert(?,?)}");
-            cstmt.setString("MaNhom", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Nhomthucdon entity = (Nhomthucdon) sessionFactory.getCurrentSession()
+                .createQuery(" from Nhomthucdon where MaNhom = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity != null)
+			{
+				errMessage = "Mã này đã được sử dụng, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
         
     /**
@@ -101,26 +101,26 @@ public class NhomThucDonDAO {
      * @return error message
      */
     public String CheckEdit(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
+    	String errMessage = "";
 
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.NHOMTHUCDON_CheckEdit(?,?)}");
-            cstmt.setString("MaNhom", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Nhomthucdon entity = (Nhomthucdon) sessionFactory.getCurrentSession()
+                .createQuery(" from Nhomthucdon where MaNhom = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		}        
+        finally {
+        	
         }
         return errMessage;
     }
@@ -159,26 +159,26 @@ public class NhomThucDonDAO {
      * @return error message
      */
     public String CheckDelete(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
+    	String errMessage = "";
 
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.NHOMTHUCDON_CheckDelete(?,?)}");
-            cstmt.setString("MaNhom", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Nhomthucdon entity = (Nhomthucdon) sessionFactory.getCurrentSession()
+                .createQuery(" from Nhomthucdon where MaNhom = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể xóa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		}        
+        finally {
+        	
         }
         return errMessage;
     }

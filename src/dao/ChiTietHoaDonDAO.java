@@ -1,6 +1,8 @@
 package dao;
 
 import entities.*;
+import model.ChamCongModel;
+import model.ChiTietHoaDonModel;
 import model.NguoiDungModel;
 import utilities.DataService;
 
@@ -15,8 +17,7 @@ import org.hibernate.transform.Transformers;
 
 public class ChiTietHoaDonDAO {
 	
-	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();	
 	
 	/**
      * Load list danh sach 
@@ -39,44 +40,96 @@ public class ChiTietHoaDonDAO {
 				session.close();
 			}
 			return list;
-	}
+	}	
 	
 	/**
-     * Kiem tra ma da duoc su dung chua
+     * Load list danh sach 
      *
-     * @return error message
+     * @return List<Thucdon>
      */
-    public String CheckInsert(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
+	public List<ChiTietHoaDonModel> GetList(String MaHD, int status) {		
+		String sSql = "";
+    	String sWhere = " where (1=1) and c.MaHD = '" +MaHD+ "' and c.Status = "+ status +" ";
+    	sWhere = sWhere + " and c.SoLuong > 0";
+    	
+    	sWhere = sWhere + " ORDER BY c.CreatedDate ";
+    	sSql = "SELECT c.ID, c.MaHD, c.MaThucDon, c.GhiChu, c.SoLuong, c.Gia ,t.TenThucDon "    			
+    			+ " FROM Chitiethoadon c "
+    			+ " LEFT JOIN Thucdon t ON "
+    			+ " c.MaThucDon = t.MaThucDon "    			
+    			+ sWhere;   	
+    	        
+        List<ChiTietHoaDonModel> list = new ArrayList<>();
         try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THUCDON_CheckInsert(?,?)}");
-            cstmt.setString("MaThucDon", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();            
-            errMessage = cstmt.getNString("Message");
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			for(int i=0; i<result.size(); i++){
+				Object[] objects = (Object[]) result.get(i);
+				ChiTietHoaDonModel model = new ChiTietHoaDonModel();
+            	model.setiD((int)objects[0]);
+				model.setMaHD(objects[1].toString());
+				model.setMaThucDon(objects[2].toString());
+				model.setGhiChu(objects[3].toString());
+				model.setSoLuong((int)objects[4]);
+				model.setGia((int)objects[5]);
+				model.setTenThucDon(objects[6].toString());			
+								
+				list.add(model);
+            }
+            
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+            
         }
-        return errMessage;
-    }
+        return list;
+	}
+	/**
+	 * Get tong tien cua hoa don
+	 * 
+	 */
+	public int GetSumBillID(String MaHD) {	
+		
+		int tongTien = 0;
+		String sSql = "";
+    	String sWhere = " where (1=1) and c.MaHD = '" +MaHD+ "' and c.Status = 2 and c.SoLuong > 0";    	
+    	sWhere = sWhere + " ORDER BY c.CreatedDate ";
+    	
+    	sSql = "SELECT c.SoLuong, c.Gia "    			
+    			+ " FROM Chitiethoadon c "    			  			
+    			+ sWhere;
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			for(int i=0; i<result.size(); i++){
+				Object[] objects = (Object[]) result.get(i);
+				tongTien += (int)objects[0] * (int)objects[1];
+            }
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        return tongTien;
+	}
     
     /**
      * Them
      *
      */
     
-    public String Insert(Thucdon entity) {
+    public String Insert(Chitiethoadon entity) {
 		String errMesage = "";
     	Session session = sessionFactory.openSession();
 		Transaction tx = null;
@@ -103,30 +156,28 @@ public class ChiTietHoaDonDAO {
      *
      * @return error message
      */
-    public String CheckEdit(String key) {
-        CallableStatement cstmt = null;
+    
+    public String CheckEdit(String maHD, String maThucDon) {        
         String errMessage = "";
-
         try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THUCDON_CheckEdit(?,?)}");
-            cstmt.setString("MaThucDon", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+        	Chitiethoadon entity = (Chitiethoadon) sessionFactory.getCurrentSession()
+                .createQuery(" from Chitiethoadon where MaHD = '" + maHD +"' and MaThucDon = '" + maThucDon +"' and status = 1" )
+                .uniqueResult();    
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+            
         }
         return errMessage;
     }
+    
+    
     
     /**
      * cap nhat 
@@ -134,25 +185,61 @@ public class ChiTietHoaDonDAO {
      * 
      */
     
-	public void UpdateData(String key, String ten, byte[] hinhAnh, String dienGiai, int gia, boolean status, String maNhom) {
+	public void UpdateDataStatus(String key, int status) {
+		String sSql = "";
+    	String sWhere = " where c.MaHD = '" +key+ "' ";    	
+    	
+    	sSql = "UPDATE Chitiethoadon c SET c.Status = " + status + sWhere;       
+        
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			query.executeUpdate();
+			sessionFactory.getCurrentSession().getTransaction().commit();			
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        
+	}
+	
+	public void UpdateDataNumber(String key, String maThucDon, int soLuong ) {
+		String sSql = "";
+    	String sWhere = " where c.MaHD = '" +key+ "' and c.MaThucDon = '"+ maThucDon +"' and c.Status = 1 LIMIT 1";    	
+    	
+    	sSql = "UPDATE Chitiethoadon c SET c.SoLuong = " + soLuong + sWhere;         
+        
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			query.executeUpdate();
+			sessionFactory.getCurrentSession().getTransaction().commit();			
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        
+	}
+	
+	public void UpdateDataMaHD(int key, String maHd) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		try {
-			tx = session.beginTransaction();	
-			Thucdon entity = (Thucdon) session.get(Thucdon.class, key);
-			
-			entity.setTenThucDon(ten);			
-			entity.setDienGiai(dienGiai);
-			entity.setGia(gia);			
-			entity.setStatus(status);
-			entity.setMaNhom(maNhom);
-						
+			tx = session.beginTransaction();
+			Chitiethoadon entity = (Chitiethoadon) session.get(Chitiethoadon.class, key);
+			entity.setMaHd(maHd);
 			entity.setUpdatedBy(DataService.GetUserID());
 			entity.setUpdatedDate(new Date());
-			
-			
-			entity.setHinhAnh(hinhAnh);
-			
 			session.update(entity);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -169,30 +256,41 @@ public class ChiTietHoaDonDAO {
      *
      * @return error message
      */
-    public String CheckDelete(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
+	
+	public int GetNumber(String maHD, String maThucDon)
+	{
+		int number = 0;
+		String sSql = "";
+    	String sWhere = " where (1=1) and c.MaHD = '" + maHD + "' and c.MaThucDon = '" + maThucDon + "' and c.Status = 1 " ;
+    	
+    	sWhere = sWhere + " ORDER BY c.CreatedDate LIMIT 1";
+    	sSql = "SELECT c.SoLuong "    			
+    			+ " FROM Chitiethoadon c "    			   			
+    			+ sWhere;     	        
+        
         try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THUCDON_CheckDelete(?,?)}");
-            cstmt.setString("MaThucDon", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			
+			for(int i=0; i<result.size(); i++){
+				number =  (int)result.get(i);				
+								
+            }
+            
+            
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+            
         }
-        return errMessage;
-    }
+        return number ;
+	}
+    
     
     /**
      * Xoa 

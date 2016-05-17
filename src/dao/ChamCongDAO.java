@@ -9,12 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import org.hibernate.*;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 
 public class ChamCongDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	
 				
 	/**
      * Load list danh sach 
@@ -45,45 +46,92 @@ public class ChamCongDAO {
      * @return list model
      */
     public List<ChamCongModel> GetList(String maCa, String maNguoiDung, int nam, int thang) {
-        CallableStatement cstmt = null;        
+        String sSql = "";
+    	String sWhere = " where (1=1) ";
+    	if(maCa != "")
+    		sWhere = sWhere + " AND c.MaCa = '" + maCa +"' ";
+    	if(maNguoiDung != "")
+    		sWhere = sWhere + " AND c.MaNguoiDung = '" + maNguoiDung +"' ";
+    	if(nam != 0)
+    		sWhere = sWhere + " AND c.Nam = '" + nam +"' ";
+    	if(thang != 0)
+    		sWhere = sWhere + " AND c.Thang = '" + thang +"' ";
+    	sWhere = sWhere + " ORDER BY c.Ngay, c.Thang, c.Nam ";
+    	sSql = "SELECT c.MaChamCong, c.MaCa, c.MaNguoiDung, c.Ngay, c.Thang, c.Nam ,c.DienGiai,"
+    			+ "c.CreatedBy, c.CreatedDate, c.UpdatedBy, c.UpdatedDate,"
+    			+ " ca.TenCa, n.TenNguoiDung " 
+    			+ "FROM Chamcong c "
+    			+ "LEFT JOIN Calamviec ca ON "
+    			+ "c.MaCa = ca.MaCa "
+    			+ "LEFT JOIN Nguoidung n ON "
+    			+ "c.MaNguoiDung = n.MaNguoiDung "
+    			+ sWhere;   	
+    	        
         List<ChamCongModel> list = new ArrayList<>();
         try {
-            cstmt = connection.getConnection().prepareCall(
-                    " exec dbo.CHAMCONG_GetList @MaCa = '"+ maCa +"', @MaNguoiDung = '" + maNguoiDung + "', @Nam = "+ nam +", @Thang = " + thang );  
-            ResultSet result = cstmt.executeQuery();
-            while (result.next()) 
-            {
-            	ChamCongModel model = new ChamCongModel();
-            	model.setMaChamCong(result.getInt("MaChamCong"));
-				model.setMaCa(result.getString("MaCa"));
-				model.setMaNguoiDung(result.getString("MaNguoiDung"));
-				model.setNgay(result.getInt("Ngay"));
-				model.setThang(result.getInt("Thang"));
-				model.setNam(result.getInt("Nam"));
-				model.setDienGiai(result.getString("DienGiai"));
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			for(int i=0; i<result.size(); i++){
+				Object[] objects = (Object[]) result.get(i);
+				ChamCongModel model = new ChamCongModel();
+            	model.setMaChamCong((int)objects[0]);
+				model.setMaCa(objects[1].toString());
+				model.setMaNguoiDung(objects[2].toString());
+				model.setNgay((int)objects[3]);
+				model.setThang((int)objects[4]);
+				model.setNam((int)objects[5]);
+				model.setDienGiai(objects[6].toString());
 				
-				model.setCreatedBy(result.getString("CreatedBy"));
-				model.setCreatedDate(result.getDate("CreatedDate"));
-				model.setUpdatedBy(result.getString("UpdatedBy"));
-				model.setUpdatedDate(result.getDate("UpdatedDate"));
-				model.setTenCa(result.getString("TenCa"));
-				model.setTenNguoiDung(result.getString("TenNguoiDung"));
+				model.setCreatedBy(objects[7].toString());
+				model.setCreatedDate((Date)objects[8]);
+				model.setUpdatedBy(objects[9].toString());
+				model.setUpdatedDate((Date)objects[10]);
+				model.setTenCa(objects[11].toString());
+				model.setTenNguoiDung(objects[12].toString());
 				
 				list.add(model);
-			}
+            }
             
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+            
         }
         return list;
+    } 
+    
+    /**
+     * Kiem tra ca, nguoi dung, ngay, thang, nam
+     *
+     * @return error message
+     */
+    public String CheckInsert(String maCa, String maNguoiDung, int ngay, int thang, int nam) {
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Chamcong entity = (Chamcong) sessionFactory.getCurrentSession()
+                .createQuery(" from Chamcong where Maca = '"+ maCa +"' and MaNguoiDung = '" + maNguoiDung +"'"
+                		+ " and Ngay = "+ ngay+ " and Thang = " + thang + " and Nam = "+ nam)
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity != null)
+			{
+				errMessage = "Người này đã làm ca này rồi, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
 	    
     /**
@@ -118,29 +166,27 @@ public class ChamCongDAO {
      *
      * @return error message
      */
-    public String CheckEdit(int maChamCong) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.CHAMCONG_CheckEdit(?,?)}");
-            cstmt.setInt("MaChamCong", maChamCong);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    public String CheckEdit(int key) {
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Chamcong entity = (Chamcong) sessionFactory.getCurrentSession()
+                .createQuery(" from Chamcong where MaChamCong = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -183,28 +229,26 @@ public class ChamCongDAO {
      * @return error message
      */
     public String CheckDelete(int key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.CHAMCONG_CheckDelete(?,?)}");
-            cstmt.setInt("MaChamCong", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Chamcong entity = (Chamcong) sessionFactory.getCurrentSession()
+                .createQuery(" from Chamcong where MaChamCong = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể xoas !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**

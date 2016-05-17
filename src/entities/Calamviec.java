@@ -83,7 +83,7 @@ public class Calamviec implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIME)
-	@Column(name = "BatDau", nullable = false, length = 14)
+	@Column(name = "BatDau", nullable = false, length = 15)
 	public Date getBatDau() {
 		return this.batDau;
 	}
@@ -93,7 +93,7 @@ public class Calamviec implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIME)
-	@Column(name = "KetThuc", nullable = false, length = 14)
+	@Column(name = "KetThuc", nullable = false, length = 15)
 	public Date getKetThuc() {
 		return this.ketThuc;
 	}

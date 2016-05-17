@@ -17,7 +17,7 @@ import org.hibernate.transform.Transformers;
 public class ThoiGianCoTheLamViecDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	
 		
 		
 	/**
@@ -48,14 +48,15 @@ public class ThoiGianCoTheLamViecDAO {
      *
      * @return list model
      */
-    public List<ThoiGianLamViecModel> GetList() {
-        CallableStatement cstmt = null;        
-        List<ThoiGianLamViecModel> list = new ArrayList<>();
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    " exec dbo.THOIGIANCOTHELAMVIEC_GetList ");            
-            ResultSet result = cstmt.executeQuery();
-            while (result.next()) 
+    public List<ThoiGianLamViecModel> GetList() {        
+    	List<ThoiGianLamViecModel> entities = new ArrayList<ThoiGianLamViecModel>();
+    	try {
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(" call THOIGIANCOTHELAMVIEC_GetList() ");
+            List result = query.list();                
+            /*while (result.next()) 
             {
 				ThoiGianLamViecModel model = new ThoiGianLamViecModel();
 				model.setMaCa(result.getString("MaCa"));
@@ -70,20 +71,29 @@ public class ThoiGianCoTheLamViecDAO {
 				model.setTenNguoiDung(result.getString("TenNguoiDung"));
 				
 				list.add(model);
-			}
+			}*/
+            for(int i=0; i<result.size(); i++){
+            	
+            	Object[] objects = (Object[]) result.get(i);
+            	ThoiGianLamViecModel model = new ThoiGianLamViecModel();
+            	model.setMaCa(objects[0].toString());
+				model.setMaNguoiDung(objects[1].toString());
+				model.setDienGiai(objects[2].toString());
+				model.setStatus((boolean) objects[3]);
+				model.setCreatedBy(objects[4].toString());
+				model.setCreatedDate((Date) objects[5]);
+				model.setUpdatedBy(objects[6].toString());
+				model.setUpdatedDate((Date) objects[7]);
+				model.setTenCa(objects[8].toString());
+				model.setTenNguoiDung(objects[9].toString());
+            	entities.add(model);
+            }
             
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+        } finally {            
         }
-        return list;
+        return entities;
     }
 	
 	/**
@@ -92,29 +102,26 @@ public class ThoiGianCoTheLamViecDAO {
      * @return error message
      */
     public String CheckInsert(ThoigiancothelamviecId key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckInsert(?,?,?)}");
-            cstmt.setString("MaCa", key.getMaCa());
-            cstmt.setString("MaNguoiDung", key.getMaNguoiDung());
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();            
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Thoigiancothelamviec entity = (Thoigiancothelamviec) sessionFactory.getCurrentSession()
+                .createQuery(" FROM Thoigiancothelamviec  WHERE MaCa = '"+ key.getMaCa() +"' AND MaNguoiDung = '"+ key.getMaNguoiDung() +"' ")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity != null)
+			{
+				errMessage = "Nhân viên này đã làm ở ca này rồi, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -150,29 +157,26 @@ public class ThoiGianCoTheLamViecDAO {
      * @return error message
      */
     public String CheckEdit(ThoigiancothelamviecId key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckEdit(?,?,?)}");
-            cstmt.setString("MaCa", key.getMaCa());
-            cstmt.setString("MaNguoiDung", key.getMaNguoiDung());
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Thoigiancothelamviec entity = (Thoigiancothelamviec) sessionFactory.getCurrentSession()
+                .createQuery(" FROM Thoigiancothelamviec  WHERE MaCa = '"+ key.getMaCa() +"' AND MaNguoiDung = '"+ key.getMaNguoiDung() +"' ")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Nhân viên chưa làm ở ca này, không thể sửa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -211,29 +215,26 @@ public class ThoiGianCoTheLamViecDAO {
      * @return error message
      */
     public String CheckDelete(ThoigiancothelamviecId key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THOIGIANCOTHELAMVIEC_CheckDelete(?,?,?)}");
-            cstmt.setString("MaCa", key.getMaCa());
-            cstmt.setString("MaNguoiDung", key.getMaNguoiDung());
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Thoigiancothelamviec entity = (Thoigiancothelamviec) sessionFactory.getCurrentSession()
+                .createQuery(" FROM Thoigiancothelamviec  WHERE MaCa = '"+ key.getMaCa() +"' AND MaNguoiDung = '"+ key.getMaNguoiDung() +"' ")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Nhân viên chưa làm ở ca này, không thể xóa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**

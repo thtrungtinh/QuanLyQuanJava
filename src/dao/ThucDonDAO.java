@@ -16,7 +16,7 @@ import org.hibernate.transform.Transformers;
 public class ThucDonDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	
 	
 	/**
      * Load list danh sach 
@@ -31,14 +31,62 @@ public class ThucDonDAO {
 				tx = session.beginTransaction();
 				list = session.createQuery("from Thucdon").list();
 				tx.commit();
-			} catch (HibernateException e) {
+			} catch (Exception e) {
 				if (tx != null)
 					tx.rollback();
 				e.printStackTrace();
+				System.out.println("Error: " + e);
 			} finally {
 				session.close();
 			}
 			return list;
+	}
+	
+	public List<Thucdon> GetList(String maNhom)
+	{
+		String sql = "";
+		if(maNhom == "")
+			sql = " from Thucdon ";
+		else {
+			sql = " from Thucdon t WHERE t.maNhom = '"+ maNhom +"'";
+		}
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		List<Thucdon> list = null;
+		try {
+			tx = session.beginTransaction();
+			list = session.createQuery(sql).list();
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+	
+	public List<Thucdon> GetList_ChiTiet(String maHD)
+	{
+		String sql = "";		
+		sql = " SELECT h.MAHD, H.MATHUCDUON, H.SOLUONG, H.GIA FROM HOADON h WHERE h.MaNhom = N'"+ maHD +"'";
+		
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		List<Thucdon> list = null;
+		try {
+			tx = session.beginTransaction();
+			list = session.createQuery(sql).list();
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return list;
 	}
 	
 	/**
@@ -47,28 +95,26 @@ public class ThucDonDAO {
      * @return error message
      */
     public String CheckInsert(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THUCDON_CheckInsert(?,?)}");
-            cstmt.setString("MaThucDon", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();            
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Thucdon entity = (Thucdon) sessionFactory.getCurrentSession()
+                .createQuery(" from Thucdon where MaThucDon = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity != null)
+			{
+				errMessage = "Mã này đã được sử dụng, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -104,28 +150,26 @@ public class ThucDonDAO {
      * @return error message
      */
     public String CheckEdit(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THUCDON_CheckEdit(?,?)}");
-            cstmt.setString("MaThucDon", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Thucdon entity = (Thucdon) sessionFactory.getCurrentSession()
+                .createQuery(" from Thucdon where MaThucDon = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -170,28 +214,26 @@ public class ThucDonDAO {
      * @return error message
      */
     public String CheckDelete(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.THUCDON_CheckDelete(?,?)}");
-            cstmt.setString("MaThucDon", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Thucdon entity = (Thucdon) sessionFactory.getCurrentSession()
+                .createQuery(" from Thucdon where MaThucDon = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể xóa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**

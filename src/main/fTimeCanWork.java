@@ -57,7 +57,7 @@ public class fTimeCanWork extends JFrame  {
 	
 	private List<Calamviec> listCa;	
 	private List<Nguoidung> listNguoiDung;		
-	private List<Thoigiancothelamviec> listThoiGian;	
+		
 	private List<ThoiGianLamViecModel> listThoiGianModel;	
 	
 	// Load combobox Ca lam viec

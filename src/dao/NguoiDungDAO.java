@@ -16,7 +16,7 @@ import org.hibernate.transform.Transformers;
 public class NguoiDungDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	
 	
 	/**
      * Load Nguoidung theo ma nguoi dung va mat khau 
@@ -28,8 +28,8 @@ public class NguoiDungDAO {
 			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
 				sessionFactory.getCurrentSession().getTransaction().begin();			
 			return (Nguoidung) sessionFactory.getCurrentSession()
-                .createSQLQuery(" exec NGUOIDUNG_GetListID @MaNguoiDung = '" + maNguoiDung +"' , @MatKhau='"+ matKhau +"'")
-                .addEntity(Nguoidung.class).uniqueResult();                  
+                .createQuery(" from Nguoidung where MaNguoiDung = '" + maNguoiDung +"' and MatKhau='"+ matKhau +"'")
+                .uniqueResult();                  
 		} 
 		catch (Exception e) {
 			System.out.println("Error: " + e);
@@ -66,29 +66,27 @@ public class NguoiDungDAO {
      *
      * @return error message
      */
-    public String CheckInsert(String maNguoiDung) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.NGUOIDUNG_CheckInsert(?,?)}");
-            cstmt.setString("MaNguoiDung", maNguoiDung);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();            
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    public String CheckInsert(String key) {
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Nguoidung entity = (Nguoidung) sessionFactory.getCurrentSession()
+                .createQuery(" from Nguoidung where MaNguoiDung = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity != null)
+			{
+				errMessage = "Mã này đã được sử dụng, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -123,29 +121,27 @@ public class NguoiDungDAO {
      *
      * @return error message
      */
-    public String CheckEdit(String maNguoiDung) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.NGUOIDUNG_CheckEdit(?,?)}");
-            cstmt.setString("MaNguoiDung", maNguoiDung);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    public String CheckEdit(String key) {
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Nguoidung entity = (Nguoidung) sessionFactory.getCurrentSession()
+                .createQuery(" from Nguoidung where MaNguoiDung = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -192,29 +188,27 @@ public class NguoiDungDAO {
      *
      * @return error message
      */
-    public String CheckDelete(String maNguoiDung) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.NGUOIDUNG_CheckDelete(?,?)}");
-            cstmt.setString("MaNguoiDung", maNguoiDung);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    public String CheckDelete(String key) {
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Nguoidung entity = (Nguoidung) sessionFactory.getCurrentSession()
+                .createQuery(" from Nguoidung where MaNguoiDung = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể xóa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**

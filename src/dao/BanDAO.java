@@ -1,10 +1,13 @@
 package dao;
 
 import entities.*;
+import model.BanModel;
 import utilities.DataService;
 import java.util.*;
 import java.util.Date;
 import org.hibernate.*;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
+
 import java.sql.*;
 
 
@@ -13,7 +16,51 @@ import java.sql.*;
 public class BanDAO {
 
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	
+	/**
+     * Load list danh sach 
+     *
+     * style = 0 all
+     * style = 1 % tat ca
+     * @return List<BanModel>
+     */
+	
+	public List<BanModel> GetList( int style)	{
+		
+		List<BanModel> list = new ArrayList<>();		
+		String sSql = "";
+    	String sWhere = " where (1=1)  and Status = 1 ";
+    	
+    	sWhere = sWhere + " ORDER BY b.CreatedDate ";
+    	sSql = "SELECT b.MaBan, b.TenBan "    			
+    			+ " FROM Ban b "    			   			  			
+    			+ sWhere;   
+    	if(style == 1)
+    	{
+    		BanModel model = new BanModel("%", "Tất cả");
+    		list.add(model);
+    	}    	
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			for(int i=0; i<result.size(); i++){
+				Object[] entity = (Object[]) result.get(i);	
+				BanModel model = new BanModel(entity[0].toString(), entity[1].toString());
+	    		list.add(model);
+            }
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        return list;	
+	}
 	
 	/**
      * Load list danh sach Trinh Do
@@ -44,28 +91,26 @@ public class BanDAO {
      * @return error message
      */
     public String CheckInsert(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.BAN_CheckInsert(?,?)}");
-            cstmt.setString("MaBan", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Ban entity = (Ban) sessionFactory.getCurrentSession()
+                .createQuery(" from Ban where MaBan = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity != null)
+			{
+				errMessage = "Mã này đã được sử dụng, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
         
     /**
@@ -101,28 +146,26 @@ public class BanDAO {
      * @return error message
      */
     public String CheckEdit(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.BAN_CheckEdit(?,?)}");
-            cstmt.setString("MaBan", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Ban entity = (Ban) sessionFactory.getCurrentSession()
+                .createQuery(" from Ban where MaBan = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**
@@ -159,28 +202,26 @@ public class BanDAO {
      * @return error message
      */
     public String CheckDelete(String key) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.BAN_CheckDelete(?,?)}");
-            cstmt.setString("MaBan", key);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Ban entity = (Ban) sessionFactory.getCurrentSession()
+                .createQuery(" from Ban where MaBan = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể xóa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
     
     /**

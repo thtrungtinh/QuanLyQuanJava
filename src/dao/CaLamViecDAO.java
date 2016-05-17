@@ -5,6 +5,8 @@ import utilities.DataService;
 import java.util.*;
 import java.util.Date;
 import org.hibernate.*;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
+
 import java.sql.*;
 
 
@@ -13,7 +15,7 @@ import java.sql.*;
 public class CaLamViecDAO {
 
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-	private static SqlConnection connection = new SqlConnection();
+	
 	
 	/**
      * Load list danh sach ca lam viec
@@ -32,6 +34,7 @@ public class CaLamViecDAO {
 			if (tx != null)
 				tx.rollback();
 			e.printStackTrace();
+			System.out.println(e);
 		} finally {
 			session.close();
 		}
@@ -43,29 +46,27 @@ public class CaLamViecDAO {
      *
      * @return error message
      */
-    public String CheckInsert(String maCa) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
-
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.CALAMVIEC_CheckInsert(?,?)}");
-            cstmt.setString("MaCa", maCa);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
-        }
-        return errMessage;
+    public String CheckInsert(String key) {
+    	String errMessage = "";
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Calamviec entity = (Calamviec) sessionFactory.getCurrentSession()
+                .createQuery(" from Calamviec where MaCa = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity != null)
+			{
+				errMessage = "Mã này đã được sử dụng, không thể thêm !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		} finally {
+			
+		}       
+        return errMessage;  
     }
         
     /**
@@ -100,27 +101,27 @@ public class CaLamViecDAO {
      *
      * @return error message
      */
-    public String CheckEdit(String maCa) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
+    public String CheckEdit(String key) {
+    	String errMessage = "";
 
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.CALAMVIEC_CheckEdit(?,?)}");
-            cstmt.setString("MaCa", maCa);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Calamviec entity = (Calamviec) sessionFactory.getCurrentSession()
+                .createQuery(" from Calamviec where MaCa = '" + key +"'")
+                .uniqueResult();   
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể sửa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		}        
+        finally {
+        	
         }
         return errMessage;
     }
@@ -139,8 +140,8 @@ public class CaLamViecDAO {
 			Calamviec entity = (Calamviec) session.get(Calamviec.class, maCa);
 			entity.setMaCa(maCa);
 			entity.setTenCa(tenCa);
-			entity.setBatDau(new java.sql.Timestamp(batDau.getTime()));
-			entity.setKetThuc(new java.sql.Timestamp(ketThuc.getTime()));
+			entity.setBatDau(new java.sql.Time(batDau.getTime()));
+			entity.setKetThuc(new java.sql.Time(ketThuc.getTime()));
 			entity.setNhanVienToiThieu(nhanVienToiThieu);
 			entity.setNhanVienToiDa(nhanVienToiDa);
 			entity.setLuongCaTheoNgay(LuongCaTheoNgay);
@@ -165,27 +166,27 @@ public class CaLamViecDAO {
      *
      * @return error message
      */
-    public String CheckDelete(String maCa) {
-        CallableStatement cstmt = null;
-        String errMessage = "";
+    public String CheckDelete(String key) {
+    	String errMessage = "";
 
-        try {
-            cstmt = connection.getConnection().prepareCall(
-                    "{call dbo.CALAMVIEC_CheckDelete(?,?)}");
-            cstmt.setString("MaCa", maCa);
-            cstmt.registerOutParameter("Message", java.sql.Types.NVARCHAR);
-            cstmt.execute();
-            errMessage = cstmt.getNString("Message");
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
-        } finally {
-            if (cstmt != null) {
-                try {
-                    cstmt.close();
-                } catch (SQLException ex) {
-                	System.out.println("Error: " + ex);
-                }
-            }
+        try {			
+			if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Calamviec entity = (Calamviec) sessionFactory.getCurrentSession()
+                .createQuery(" from Calamviec where MaCa = '" + key +"'")
+                .uniqueResult();  
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			if(entity == null)
+			{
+				errMessage = "Mã này không đúng, không thể xóa !";
+			}
+		} 
+		catch (Exception e) {
+			System.out.println("Error: " + e);
+			return null;
+		}        
+        finally {
+        	
         }
         return errMessage;
     }
