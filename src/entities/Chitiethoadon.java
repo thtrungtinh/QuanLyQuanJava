@@ -29,6 +29,11 @@ public class Chitiethoadon implements java.io.Serializable {
 	private Date createdDate;
 	private String updatedBy;
 	private Date updatedDate;
+	private boolean Stock;
+	private boolean Done;
+	
+
+	
 
 	public Chitiethoadon() {
 	}
@@ -149,6 +154,23 @@ public class Chitiethoadon implements java.io.Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+	
+	@Column(name = "Stock", nullable = false)
+	public boolean isStock() {
+		return Stock;
+	}
+
+	public void setStock(boolean stock) {
+		Stock = stock;
+	}
+	@Column(name = "Done", nullable = false)
+	public boolean isDone() {
+		return Done;
+	}
+
+	public void setDone(boolean done) {
+		Done = done;
 	}
 
 }

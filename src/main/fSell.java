@@ -47,6 +47,12 @@ import javax.swing.SwingConstants;
 
 public class fSell extends JFrame implements ActionListener {
 
+	/*
+	 * Table hoadon cot Status
+	 *  0 : Huỷ bàn
+	 *  1 : Đang sử dụng
+	 *  2 : Đã thanh toán	 
+	 */
 	private JPanel pnlChiTietHoaDon;
 	private JPanel contentPane;
 	private List<Ban> listBan;
@@ -59,6 +65,7 @@ public class fSell extends JFrame implements ActionListener {
 	private List<Nhomthucdon> listNhomThucDon;
 	private String keyMaHD = "";
 	private String keyMaBan;
+	private String keyMaHDGopBan="";
 	private JButton sourceButton;
 	private JButton sourceButtonChuyenBan;
 	private JButton sourceButtonGopBan;
@@ -78,7 +85,7 @@ public class fSell extends JFrame implements ActionListener {
 	// Load danh sach thuc don
 	private void Load_DanhSachThucDon()
 	{
-		String maNhom = listNhomThucDon.get(cboNhom.getSelectedIndex()).getMaNhom();
+		String maNhom = listNhomThucDon.get(cboNhom.getSelectedIndex()).getMaNhom(); // lấy mã nhóm từ combobox nhóm thực đơn
 		ShowTableData(maNhom);
 	}
 	//Load Combobox Nhom thuc don
@@ -185,7 +192,7 @@ public class fSell extends JFrame implements ActionListener {
         DataService.SetWidhtColumnTable(tblChiTietHoaDon, 4, 80); 
         DataService.SetWidhtColumnTable(tblChiTietHoaDon, 5, 140); 
         DataService.SetWidhtColumnTable(tblChiTietHoaDon, 6, 140); 
-        lblThanhTien.setText(String.format("%,8d%n", thanhTien));
+        lblThanhTien.setText(String.format("%,8d%n", thanhTien)); // thêm dấu phẩy (,) phần ngàn
     	System.out.println("--- Success ---");
 	} 	
 	
@@ -194,14 +201,20 @@ public class fSell extends JFrame implements ActionListener {
 	private void GetMaHDWhenClickButton(String maBan)
 	{
 		HoaDonDAO dao = new HoaDonDAO();
-		keyMaHD = dao.GetKeyTop1(maBan);
+		keyMaHD = dao.GetKeyTop1(maBan);		
+	}
+	
+	private void GetMaHDWhenClickButtonGopBan(String maBan)
+	{
+		HoaDonDAO dao = new HoaDonDAO();		
+		keyMaHDGopBan = dao.GetKeyTop1(maBan);
 	}
 	
 	/**
 	 * Insert  hoa don
 	 */
 	
-	private String InsertDataHoaDon(String maBan)
+	private String InsertDataHoaDon(String maBan, int numOfCus)
     {   	
     	HoaDonDAO dao = new HoaDonDAO();
 		String key = dao.GenerateBillID();
@@ -219,7 +232,7 @@ public class fSell extends JFrame implements ActionListener {
 			entity.setCreatedBy(DataService.GetUserID());
 			entity.setUpdatedDate(currentDate);
 			entity.setCreatedDate(currentDate);						
-			
+			entity.setNumOfCus(numOfCus);
 			errMessage = dao.Insert(entity);
 			
 		} 
@@ -249,6 +262,22 @@ public class fSell extends JFrame implements ActionListener {
 			keyMaHD = "";
 			SetTitlePanel("");
 			ShowTableDataChiTietHoaDon(keyMaHD);
+		}
+	}
+	
+	private void UpdateDataHoaDonGopBan(int status)
+	{
+		HoaDonDAO dao = new HoaDonDAO();
+		ChiTietHoaDonDAO chiTietDAO = new ChiTietHoaDonDAO();
+		String message = dao.CheckEdit(keyMaHDGopBan);		
+		if(message == "")
+		{
+			dao.UpdateDataStatus(keyMaHDGopBan, status);	
+			chiTietDAO.UpdateDataStatus(keyMaHDGopBan, status);
+			sourceButton.setBackground(null);
+			keyMaHDGopBan = "";
+			SetTitlePanel("");
+			ShowTableDataChiTietHoaDon(keyMaHDGopBan);
 		}
 	}
 	
@@ -334,6 +363,7 @@ public class fSell extends JFrame implements ActionListener {
 		});
 	}
 	
+	// load bàn
 	private void SetPanelPartial(JPanel panel)
 	{
 		BanDAO dao = new BanDAO();
@@ -344,9 +374,9 @@ public class fSell extends JFrame implements ActionListener {
 		panel.setLayout(new GridLayout(0,4,10,10));
 	    for (Ban entity : listBan) {
 	    	JButton button = null;
-	    	button = new JButton(entity.getTenBan());
+	    	button = new JButton(entity.getTenBan());// Gán tên button bằng tên bàn
 	    	button.setToolTipText("Bấm vào bàn để đặt thực đơn");
-	    	button.setActionCommand(entity.getMaBan());
+	    	button.setActionCommand(entity.getMaBan()); //gán mã bàn cho button ActionCommand
 	    	button.setPreferredSize(new Dimension(100, 40));
 	    	if(hdDao.GetStatusTop1(entity.getMaBan()) == 1)
 	    		button.setBackground(Color.green);
@@ -356,6 +386,7 @@ public class fSell extends JFrame implements ActionListener {
 	    	button.addActionListener(this);
 	    }
 	}
+	
 
 	/**
 	 * Create the frame.
@@ -417,36 +448,7 @@ public class fSell extends JFrame implements ActionListener {
 		);
 		
 		tblThucDon = new JTable();
-		tblThucDon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				JTable table =(JTable) e.getSource();
-		        Point p = e.getPoint();
-		        int row = table.rowAtPoint(p);
-		        if (e.getClickCount() == 2) {
-		            // Goi ham xu ly double click
-		        	String maThucDon = (String)table.getValueAt(row, 0);
-		        	int gia = (int)table.getValueAt(row, 3);		        	
-		        	if(keyMaHD != "")		        	
-	        		{
-		        		ChiTietHoaDonDAO dao = new ChiTietHoaDonDAO();
-		        		if(dao.CheckEdit(keyMaHD, maThucDon) == "")
-	        			{
-		        			int soluong = dao.GetNumber(keyMaHD, maThucDon) + 1;
-		        			UpdateDataChiTietHoaDon(keyMaHD, maThucDon, soluong);
-	        			}
-		        		else
-		        		{
-		        			InsertDataChiTietHoaDon(keyMaHD, maThucDon, "", 1, gia);
-		        			ShowTableDataChiTietHoaDon(keyMaHD);
-	        			}
-		        		
-	        		}
-		        	
-		        	ShowTableDataChiTietHoaDon(keyMaHD);
-		        }
-			}
-		});
+		
 		scrollPane.setViewportView(tblThucDon);
 		panel_2.setLayout(gl_panel_2);
 		
@@ -461,45 +463,19 @@ public class fSell extends JFrame implements ActionListener {
 		JScrollPane scrollPane_1 = new JScrollPane(tblChiTietHoaDon, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		JButton btnThanhToan = new JButton("Thanh toán");
-		btnThanhToan.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				UpdateDataHoaDon(2);
-			}
-		});
+		
 		btnThanhToan.setMargin(new Insets(2, 15, 2, 15));
 		
 		JButton btnHuyBan = new JButton("Hủy bàn");
-		btnHuyBan.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				UpdateDataHoaDon(0);
-			}
-		});
+		
 		btnHuyBan.setMargin(new Insets(2, 15, 2, 15));
 		
 		JButton btnChuyenBan = new JButton("Chuyển bàn");
-		btnChuyenBan.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(sourceButton.getBackground()== Color.green)
-				{
-					isChuyenBan = true;
-					sourceButtonChuyenBan = sourceButton;
-					sourceButtonChuyenBan.setBackground(Color.red);
-				}
-			}
-		});
+		
 		btnChuyenBan.setMargin(new Insets(2, 15, 2, 15));
 		
 		JButton btnGopBan = new JButton("Gộp bàn");
-		btnGopBan.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(sourceButton.getBackground()== Color.green)
-				{
-					isGopBan = true;
-					sourceButtonGopBan = sourceButton;
-					sourceButtonGopBan.setBackground(Color.yellow);
-				}
-			}
-		});
+		
 		
 		JLabel lblThnhTin = new JLabel("Thành tiền: ");
 		
@@ -554,16 +530,16 @@ public class fSell extends JFrame implements ActionListener {
 			public void mouseClicked(MouseEvent e) {
 				JTable table =(JTable) e.getSource();
 		        Point p = e.getPoint();
-		        int row = table.rowAtPoint(p);
+		        int row = table.rowAtPoint(p); // lấy vị trí của dòng tại điểm đang click
 		        if (e.getClickCount() == 2) {
 		            // Goi ham xu ly double click
 		        	String maThucDon = (String)table.getValueAt(row, 2);		        			        	
 		        	if(keyMaHD != "")		        	
 	        		{
 		        		ChiTietHoaDonDAO dao = new ChiTietHoaDonDAO();
-		        		if(dao.CheckEdit(keyMaHD, maThucDon) == "")
+		        		if(dao.CheckEdit(keyMaHD, maThucDon) == "") // Món đang chọn đã có trên bàn thì lấy số lượng đang có - 1
 	        			{
-		        			int soluong = dao.GetNumber(keyMaHD, maThucDon) - 1;
+		        			int soluong = dao.GetNumber(keyMaHD, maThucDon) - 1; 
 		        			UpdateDataChiTietHoaDon(keyMaHD, maThucDon, soluong);
 	        			}	
 		        		
@@ -585,52 +561,150 @@ public class fSell extends JFrame implements ActionListener {
 			}
 		});
 		
+		// form load
 		FillcboNhom();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg) {
-		// TODO Auto-generated method stub	
-		sourceButton = (JButton)arg.getSource();
-		String name = sourceButton.getName();
-		if (name == arg.getActionCommand())
-		{
-			if(isChuyenBan == true)
-			{
-				UpdateDataHoaDonChuyenBan(arg.getActionCommand());
-				isChuyenBan = false;
-				sourceButton.setBackground(Color.green);
-				sourceButtonChuyenBan.setBackground(null);
-			}
-			if(isGopBan == true)
-			{
-				GetMaHDWhenClickButton(arg.getActionCommand());
-				UpdateDataChiTietHoaDonGopBan(keyMaHD);
-				isGopBan = false;
-				sourceButton.setBackground(Color.green);
-				sourceButtonGopBan.setBackground(null);
-			}
-			if(sourceButton.getBackground() != Color.green)
-			{
-				int reply = JOptionPane.showConfirmDialog(null, "Mở bàn mới !", "Mở bàn", JOptionPane.YES_NO_OPTION);
-		        if (reply == JOptionPane.YES_OPTION) {
-		        	String message = InsertDataHoaDon(arg.getActionCommand());			        	
-		        	SetTitlePanel(sourceButton.getText());
-		        	sourceButton.setBackground(Color.green);
-		        	
-		        }		        
-		        
-			}
-			else 
-			{
-				GetMaHDWhenClickButton(arg.getActionCommand());
-				SetTitlePanel(sourceButton.getText());
-				
-				
-			}
-			keyMaBan = arg.getActionCommand();
-			ShowTableDataChiTietHoaDon(keyMaHD);
-		}		
 		
+		
+		// ------ load action ---
+		/*
+		 * tbl thực đơn click double 	
+		 */
+		tblThucDon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JTable table =(JTable) e.getSource();
+		        Point p = e.getPoint();
+		        int row = table.rowAtPoint(p);// lấy vị trí của dòng tại điểm đang click
+		        if (e.getClickCount() == 2) {
+		            // Goi ham xu ly double click
+		        	String maThucDon = (String)table.getValueAt(row, 0);
+		        	int gia = (int)table.getValueAt(row, 3);		        	
+		        	if(keyMaHD != "")		        	
+	        		{
+		        		ChiTietHoaDonDAO dao = new ChiTietHoaDonDAO();
+		        		if(dao.CheckEdit(keyMaHD, maThucDon) == "") // Món đang chọn đã có trên bàn thì lấy số lượng đang có + 1
+	        			{
+		        			int soluong = dao.GetNumber(keyMaHD, maThucDon) + 1;
+		        			UpdateDataChiTietHoaDon(keyMaHD, maThucDon, soluong);
+	        			}
+		        		else
+		        		{
+		        			InsertDataChiTietHoaDon(keyMaHD, maThucDon, "", 1, gia);
+		        			ShowTableDataChiTietHoaDon(keyMaHD);
+	        			}
+		        		
+	        		}
+		        	
+		        	ShowTableDataChiTietHoaDon(keyMaHD);
+		        }
+			}
+		});
+		
+		btnHuyBan.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UpdateDataHoaDon(0);
+			}
+		});
+		
+		btnThanhToan.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UpdateDataHoaDon(2);
+			}
+		});
+		
+		btnChuyenBan.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(sourceButton.getBackground()== Color.green)
+				{
+					isChuyenBan = true;
+					sourceButtonChuyenBan = sourceButton;
+					sourceButtonChuyenBan.setBackground(Color.red);
+				}
+			}
+		});
+		
+		btnGopBan.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(sourceButton.getBackground()== Color.green)
+				{
+					isGopBan = true;
+					sourceButtonGopBan = sourceButton;	
+					GetMaHDWhenClickButtonGopBan(sourceButton.getActionCommand());
+					sourceButtonGopBan.setBackground(Color.yellow);
+				}
+			}
+		});
 	}
+		/*
+		 * Thực hiện lệnh trên các button bàn
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
+		@Override
+		public void actionPerformed(ActionEvent arg) {
+			// TODO Auto-generated method stub	
+			sourceButton = (JButton)arg.getSource();
+			String name = sourceButton.getName();
+			if (name == arg.getActionCommand())
+			{
+				if(isChuyenBan == true)
+				{
+					UpdateDataHoaDonChuyenBan(arg.getActionCommand());
+					isChuyenBan = false;
+					sourceButton.setBackground(Color.green);
+					sourceButtonChuyenBan.setBackground(null);
+				}
+				if(isGopBan == true)
+				{
+					GetMaHDWhenClickButton(arg.getActionCommand());				
+					UpdateDataChiTietHoaDonGopBan(keyMaHD);
+					UpdateDataHoaDonGopBan(0);				
+					isGopBan = false;
+					sourceButton.setBackground(Color.green);
+					sourceButtonGopBan.setBackground(null);
+				}
+				if(sourceButton.getBackground() != Color.green)
+				{
+					/*int reply = JOptionPane.showConfirmDialog(null, "Mở bàn mới !", "Mở bàn", JOptionPane.YES_NO_OPTION);
+			        if (reply == JOptionPane.YES_OPTION) {
+			        	String message = InsertDataHoaDon(arg.getActionCommand());			        	
+			        	SetTitlePanel(sourceButton.getText());
+			        	sourceButton.setBackground(Color.green);
+			        	
+			        }		     */
+					
+					String s = (String)JOptionPane.showInputDialog(
+                            this,
+                            "Mở bàn mới !\n"
+                            + "\"Số lượng khách\"",
+                            "Mở bàn",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,null,"1");			        
+			        if ((s != null) && (s.length() > 0)) {			        	
+			        	try
+			        	{
+			        		int numOfCus = Integer.parseInt(s);
+			        		String message = InsertDataHoaDon(arg.getActionCommand(), numOfCus);			        	
+				        	SetTitlePanel(sourceButton.getText());
+				        	sourceButton.setBackground(Color.green);
+			        	}
+			        	catch(Exception ex)
+			        	{
+			        		JOptionPane.showMessageDialog(null, "Số lượng khách phải là số !");
+			        		return;
+			        	}			        	
+			        }
+			        
+				}
+				else 
+				{
+					GetMaHDWhenClickButton(arg.getActionCommand());
+					SetTitlePanel(sourceButton.getText());
+					
+					
+				}
+				keyMaBan = arg.getActionCommand();
+				// click vao bàn sẽ hiển thị chi tiết hoá đơn bàn đang sử dụng
+				ShowTableDataChiTietHoaDon(keyMaHD);
+			}	
+	}	
 }

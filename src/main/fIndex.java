@@ -35,6 +35,7 @@ import utilities.DataService;
 import dao.*;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
+import utilities.*;
 
 public class fIndex extends JFrame {
 
@@ -55,7 +56,7 @@ public class fIndex extends JFrame {
     		@Override
             public boolean isCellEditable(int row, int column) {
                //all cells false
-               return false;
+               return false; // hàm cấm sửa dòng trên table
             }
     	};
     	
@@ -66,6 +67,7 @@ public class fIndex extends JFrame {
         column.add("Diễn Giải");
         column.add("Sử dụng");
         model.setColumnIdentifiers(column);
+        // đưa dữ liệu từng dòng vào table
         List<Vitri> list = vTriDAO.Load();
         for (int i = 0; i < list.size(); i++) {
         	Vitri vtri = (Vitri)list.get(i);
@@ -79,10 +81,8 @@ public class fIndex extends JFrame {
         }
         
         tblIndex.setModel(model);
-        TableColumn tc = tblIndex.getColumnModel().getColumn(3);
-        tc.setCellRenderer( tblIndex.getDefaultRenderer( Boolean.class ) );
-        tc.setCellEditor( tblIndex.getDefaultEditor( Boolean.class ) );
-    	System.out.println("--- Success ---");
+        DataService.SetColumnTableToCheckBox(tblIndex, 3);
+        System.out.println("--- Success ---");
 	}
     
     private String EditData(String maViTri, String tenViTri, String dienGiai, boolean status)
@@ -121,8 +121,7 @@ public class fIndex extends JFrame {
     }
     
     private String InsertData()
-    {
-    	
+    {    	
     	SessionFactory factory = HibernateUtil.getSessionFactory();	 
 	    Session session = factory.getCurrentSession();	    
 		ViTriDAO viTriDAO = new ViTriDAO();
@@ -261,7 +260,7 @@ public class fIndex extends JFrame {
 		tblIndex = new JTable();
 		tblIndex.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e) { // Click chuột lấy thông tin bên bảng đưa qua bên kia
 				try {				
 					if (e.getSource() == tblIndex) {
 			            int iDongDaChon = tblIndex.getSelectedRow();

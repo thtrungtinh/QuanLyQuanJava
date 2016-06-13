@@ -113,6 +113,7 @@ public class fUsers extends JFrame  {
         column.add("Địa chỉ");        
         column.add("Sử dụng");
         model.setColumnIdentifiers(column);
+        // ham load danh sach edit by lanh nguyen 24-05-2016
         listNguoiDung = dao.Load();
         for (int i = 0; i < listNguoiDung.size(); i++) {
         	Nguoidung entity = (Nguoidung)listNguoiDung.get(i);
@@ -168,7 +169,7 @@ public class fUsers extends JFrame  {
 		return index;
 	}
 	
-    //Load Table click row
+    //Load Table click row 
 	private void ClickRowTable(int index) {
 		Nguoidung entity = listNguoiDung.get(index);
 		txtMaNguoiDung.setText(entity.getMaNguoiDung());
@@ -189,6 +190,7 @@ public class fUsers extends JFrame  {
 		cboTrinhDo.setSelectedIndex(intdexTrinhDo);
 	}
 	
+	// sua thong tin
     private String EditData()
     {
     	String errMessage = "";
@@ -229,6 +231,7 @@ public class fUsers extends JFrame  {
     	return errMessage;
     }
     
+    // xoa thong tin
     private String DeleteData(String key)
     {
     	String errMessage = "";
@@ -246,6 +249,7 @@ public class fUsers extends JFrame  {
     	return errMessage;    	
     }
     
+    // them du lieu
     private String InsertData()
     {   	
     	NguoiDungDAO dao = new NguoiDungDAO();
@@ -472,7 +476,8 @@ public class fUsers extends JFrame  {
 					if (e.getSource() == tbl) {
 			            int index = tbl.getSelectedRow();
 			            if (index != -1) 
-			            {			            	
+			            {		
+			            	// goi ham chuyen tu bang qua textbox
 			            	ClickRowTable(index);	                	                
 			            }
 			        }

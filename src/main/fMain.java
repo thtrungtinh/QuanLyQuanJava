@@ -175,6 +175,17 @@ private JPanel contentPane;
 		});
 		mnNghipV.add(mntmBnHng);
 		
+		JMenuItem mntmNhBp = new JMenuItem("Nhà bếp");
+		mntmNhBp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Mở nghiệp vụ -> Nhà bếp");
+				fKitchen view = new fKitchen();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnNghipV.add(mntmNhBp);
+		
 		JMenu mnBoCo = new JMenu("Báo cáo");
 		menuBar.add(mnBoCo);
 		

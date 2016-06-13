@@ -84,7 +84,7 @@ public class HoaDonDAO {
 	}
 	
 	/**
-     * Kiem tra ma duoc cap nhat
+     * Tạo mã hoá đơn tự động
      *
      * @return error message
      */

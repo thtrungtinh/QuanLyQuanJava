@@ -24,7 +24,8 @@ public class Hoadon implements java.io.Serializable {
 	private Date createdDate;
 	private String updatedBy;
 	private Date updatedDate;
-
+	private int NumOfCus;
+	
 	public Hoadon() {
 	}
 
@@ -104,6 +105,15 @@ public class Hoadon implements java.io.Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+	
+	@Column(name = "NumOfCus", nullable = false)
+	public int getNumOfCus() {
+		return NumOfCus;
+	}
+
+	public void setNumOfCus(int numOfCus) {
+		NumOfCus = numOfCus;
 	}
 
 }
