@@ -1,7 +1,9 @@
 package dao;
 
 import entities.*;
+import model.BanModel;
 import model.NguoiDungModel;
+import model.NhanVienModel;
 import utilities.DataService;
 
 import java.sql.CallableStatement;
@@ -17,6 +19,50 @@ public class NguoiDungDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	
+	/**
+     * Load list danh sach 
+     *
+     * style = 0 all
+     * style = 1 % tat ca
+     * @return List<NhanVienModel>
+     */
+	
+	public List<NhanVienModel> GetList( int style)	{
+		
+		List<NhanVienModel> list = new ArrayList<>();		
+		String sSql = "";
+    	String sWhere = " where (1=1)  and Status = 1 ";
+    	
+    	sWhere = sWhere + " ORDER BY b.CreatedDate ";
+    	sSql = "SELECT b.MaNguoiDung, b.TenNguoiDung "    			
+    			+ " FROM Nguoidung b "    			   			  			
+    			+ sWhere;   
+    	if(style == 1)
+    	{
+    		NhanVienModel model = new NhanVienModel("%", "Tất cả");
+    		list.add(model);
+    	}    	
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			for(int i=0; i<result.size(); i++){
+				Object[] entity = (Object[]) result.get(i);	
+				NhanVienModel model = new NhanVienModel(entity[0].toString(), entity[1].toString());
+	    		list.add(model);
+            }
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        return list;	
+	}
 	
 	/**
      * Load Nguoidung theo ma nguoi dung va mat khau 

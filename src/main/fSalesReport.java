@@ -22,6 +22,8 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import com.toedter.calendar.JDateChooser;
 
 import model.*;
@@ -43,18 +45,25 @@ public class fSalesReport extends JFrame {
 	private JTable tblChiTietHoaDon;
 	private DefaultTableModel model;
 	private List<BanModel> listBan;
+	private List<NhanVienModel> listNhanVien;
 	private List<HoaDonModel> listHoaDon;
+	private List<CaModel> listCa;
 	private List<ChiTietHoaDonModel> listChiTietHoaDon;
 	private JComboBox cboBan;
+	private JComboBox cboNhanVien;
 	private JDateChooser dtcTuNgay;
 	private JDateChooser dtcDenNgay;
 	private int thanhTien;
 	private int tongTien;
+	private int tongKhach;
 	private JLabel lblThanhTien;
 	private JLabel lblTongTien;
+	private JLabel lblTongNguoi;
+	private JLabel lblCaLmVic;
+	private JComboBox cboCa;
 
 	
-	//Load Combobox Nhom thuc don
+	
 	private void FillcboBan()
 	{		
 		BanDAO entities = new BanDAO();
@@ -65,10 +74,31 @@ public class fSalesReport extends JFrame {
 		}		
 	}
 	
-	// Load DataTable thuc don
-	public void ShowTableDataHoaDon(Date tu, Date den, String maBan) 
+	private void FillcboCa()
+	{		
+		CaLamViecDAO entities = new CaLamViecDAO();
+		listCa = entities.GetList(1);		
+		for(CaModel entity : listCa)
+		{
+			cboCa.addItem(entity.getTenCa());		
+		}		
+	}
+	
+	
+	private void FillcboNhanVien()
+	{		
+		NguoiDungDAO entities = new NguoiDungDAO();
+		listNhanVien = (List<NhanVienModel>) entities.GetList(1);		
+		for(NhanVienModel entity : listNhanVien)
+		{
+			cboNhanVien.addItem(entity.getTenNguoiDung());		
+		}		
+	}
+	
+	public void ShowTableDataHoaDon(Date tu, Date den, String maBan, String nhanVien, String maCa) 
     {		
 		tongTien = 0;
+		tongKhach = 0;
     	System.out.println("--- Loading ---");
     	HoaDonDAO dao = new HoaDonDAO();
     	model = new DefaultTableModel(){
@@ -83,26 +113,30 @@ public class fSalesReport extends JFrame {
     	Vector column = new Vector();
         column.add("Mã HD");        
         column.add("Bàn");
+        column.add("Số khách");
         column.add("Thành tiền hóa đơn");
         
         model.setColumnIdentifiers(column);
-        listHoaDon = dao.GetList(tu, den, maBan);
+        listHoaDon = dao.GetList(tu, den, maBan, nhanVien, maCa);
         for (int i = 0; i < listHoaDon.size(); i++) {
         	HoaDonModel entity = (HoaDonModel)listHoaDon.get(i);
         	Vector row = new Vector();
         	row.add(entity.getMaHD());
-        	row.add(entity.getTenBan());	        	
+        	row.add(entity.getTenBan());
+        	row.add(entity.getNumOfCus());
         	row.add(String.format("%,8d%n", entity.getTongTien()));
-        	tongTien += entity.getTongTien();  		            
+        	tongTien += entity.getTongTien();  		
+        	tongKhach += entity.getNumOfCus();
             model.addRow(row);
         }
         
         tblHoaDon.setModel(model);	        
-        DataService.SetWidhtColumnTable(tblHoaDon, 0, 170);
+        DataService.SetWidhtColumnTable(tblHoaDon, 0, 140);
         DataService.SetWidhtColumnTable(tblHoaDon, 1, 170);
-        DataService.SetWidhtColumnTable(tblHoaDon, 2, 170);
+        DataService.SetWidhtColumnTable(tblHoaDon, 2, 80);
+        DataService.SetWidhtColumnTable(tblHoaDon, 3, 140);
         lblTongTien.setText(String.format("%,8d%n", tongTien));      
-        
+        lblTongNguoi.setText(String.format("%,8d%n", tongKhach));      
     	System.out.println("--- Success ---");
 	} 
 	
@@ -182,7 +216,7 @@ public class fSalesReport extends JFrame {
 	public fSalesReport() {
 		setTitle("B\u00E1o c\u00E1o doanh thu");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 900, 562);
+		setBounds(100, 100, 979, 667);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -210,58 +244,92 @@ public class fSalesReport extends JFrame {
 		btnLoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Date tu = (Date)dtcTuNgay.getDate();
-				Date den = (Date)dtcDenNgay.getDate();
+				if(dtcTuNgay.getDate() == null)
+				{
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn ngày bắt đầu ... !");
+					return;
+				}
+				Date den;
+				if(dtcDenNgay.getDate() == null)
+				{
+					den = new Date();					
+				}
+				else
+					den = (Date)dtcDenNgay.getDate();
 				String maBan = listBan.get(cboBan.getSelectedIndex()).getMaBan();
+				String maNhanVien = listNhanVien.get(cboNhanVien.getSelectedIndex()).getMaNguoiDung();
+				String maCa = listCa.get(cboCa.getSelectedIndex()).getMaCa();
 				
-				ShowTableDataHoaDon(tu, den, maBan);
+				ShowTableDataHoaDon(tu, den, maBan, maNhanVien, maCa);
 				ShowTableDataChiTietHoaDon("");
 			}
 		});
+		
+		JLabel lblNhnVin = new JLabel("Nhân viên");
+		
+		cboNhanVien = new JComboBox();
+		
+		lblCaLmVic = new JLabel("Ca làm việc");
+		
+		cboCa = new JComboBox();
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
 					.addGap(46)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblT)
-						.addComponent(lblNewLabel))
-					.addGap(13)
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(btnLoc, GroupLayout.PREFERRED_SIZE, 113, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panel.createSequentialGroup()
-							.addComponent(dtcTuNgay, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblT)
+								.addComponent(lblNewLabel))
+							.addGap(13)
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(cboBan, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(dtcTuNgay, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
 							.addGap(18)
-							.addComponent(lbln, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
-						.addComponent(cboBan, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
-						.addGroup(gl_panel.createSequentialGroup()
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblCaLmVic, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lbln, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(dtcDenNgay, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(cboCa, Alignment.TRAILING, 0, 118, Short.MAX_VALUE))
 							.addGap(18)
-							.addComponent(btnLoc, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel.createSequentialGroup()
-							.addGap(6)
-							.addComponent(dtcDenNgay, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-					.addGap(149))
+							.addComponent(lblNhnVin, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(cboNhanVien, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)))
+					.addGap(277))
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel.createSequentialGroup()
-							.addGap(12)
-							.addComponent(lblT))
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel.createSequentialGroup()
+									.addGap(12)
+									.addComponent(lblT))
+								.addGroup(gl_panel.createSequentialGroup()
+									.addContainerGap()
+									.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+										.addComponent(dtcDenNgay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addComponent(lblNhnVin)
+										.addComponent(cboNhanVien, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+								.addGroup(gl_panel.createSequentialGroup()
+									.addContainerGap()
+									.addComponent(dtcTuNgay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblNewLabel)
+								.addComponent(cboBan, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblCaLmVic)
+								.addComponent(cboCa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_panel.createSequentialGroup()
 							.addGap(14)
-							.addComponent(lbln))
-						.addGroup(gl_panel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(dtcTuNgay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(dtcDenNgay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(lbln)))
 					.addGap(18)
-					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblNewLabel)
-						.addComponent(cboBan, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnLoc))
+					.addComponent(btnLoc)
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		panel.setLayout(gl_panel);
@@ -275,26 +343,32 @@ public class fSalesReport extends JFrame {
 		
 		lblTongTien = new JLabel("0");
 		lblTongTien.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		lblTongNguoi = new JLabel("0");
+		lblTongNguoi.setHorizontalAlignment(SwingConstants.RIGHT);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_1.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addComponent(scrollPaneHoaDon, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-							.addContainerGap())
-						.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
-							.addComponent(lblTongTien)
-							.addGap(32))))
+					.addComponent(scrollPaneHoaDon, GroupLayout.PREFERRED_SIZE, 389, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+					.addContainerGap(204, Short.MAX_VALUE)
+					.addComponent(lblTongNguoi, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+					.addGap(34)
+					.addComponent(lblTongTien, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+					.addGap(37))
 		);
 		gl_panel_1.setVerticalGroup(
 			gl_panel_1.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel_1.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(scrollPaneHoaDon, GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+					.addComponent(scrollPaneHoaDon, GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
 					.addGap(18)
-					.addComponent(lblTongTien))
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTongTien)
+						.addComponent(lblTongNguoi)))
 		);
 		
 		tblHoaDon = new JTable();
@@ -324,19 +398,20 @@ public class fSalesReport extends JFrame {
 		gl_panel_2.setHorizontalGroup(
 			gl_panel_2.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(scrollPaneChiTietHoaDon, GroupLayout.PREFERRED_SIZE, 515, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(11, Short.MAX_VALUE))
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap(269, Short.MAX_VALUE)
-					.addComponent(lblThanhTien, GroupLayout.PREFERRED_SIZE, 232, GroupLayout.PREFERRED_SIZE)
-					.addGap(35))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_2.createSequentialGroup()
+							.addComponent(scrollPaneChiTietHoaDon, GroupLayout.PREFERRED_SIZE, 515, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())
+						.addGroup(Alignment.TRAILING, gl_panel_2.createSequentialGroup()
+							.addComponent(lblThanhTien, GroupLayout.PREFERRED_SIZE, 232, GroupLayout.PREFERRED_SIZE)
+							.addGap(26))))
 		);
 		gl_panel_2.setVerticalGroup(
 			gl_panel_2.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel_2.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(scrollPaneChiTietHoaDon, GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+					.addComponent(scrollPaneChiTietHoaDon, GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
 					.addGap(18)
 					.addComponent(lblThanhTien))
 		);
@@ -345,21 +420,9 @@ public class fSalesReport extends JFrame {
 		scrollPaneChiTietHoaDon.setViewportView(tblChiTietHoaDon);
 		panel_2.setLayout(gl_panel_2);
 		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new TitledBorder(null, "Th\u00E0nh ti\u1EC1n", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		contentPane.add(panel_3, BorderLayout.SOUTH);
-		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
-		gl_panel_3.setHorizontalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 862, Short.MAX_VALUE)
-		);
-		gl_panel_3.setVerticalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 10, Short.MAX_VALUE)
-		);
-		panel_3.setLayout(gl_panel_3);
-		
 		// call load form
 		FillcboBan();
+		FillcboNhanVien();
+		FillcboCa();
 	}
 }

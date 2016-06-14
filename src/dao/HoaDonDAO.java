@@ -16,7 +16,39 @@ public class HoaDonDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	
-	public List<HoaDonModel> GetList(Date tu, Date den, String maBan)
+	/**
+     * Load ma ca
+     *
+     * @return key
+     */
+	public String GetMaCa(String time) {	
+		String key = "";
+		String sSql = "";
+    	String sWhere = " where (1=1) and CAST('" + time + "' AS time) BETWEEN BatDau AND KetThuc LIMIT 1";   
+    	sSql = "SELECT c.MaCa FROM calamviec c "    			   			   			  			
+    			+ sWhere;          
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();			
+			key = (String) result.get(0);
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        return key;
+	}
+	/**
+	 * Get list báo cáo
+	 * @return List<HoaDonModel>
+	 */
+	public List<HoaDonModel> GetList(Date tu, Date den, String maBan, String nhanVien, String maCa)
 	{
 		List<HoaDonModel> list = new ArrayList<>();
 		ChiTietHoaDonDAO dao = new ChiTietHoaDonDAO();
@@ -25,9 +57,13 @@ public class HoaDonDAO {
     	String sWhere = " where (1=1)  and h.Status = 2 ";
     	if(maBan != "%")
     		sWhere += " and h.MaBan = '"+ maBan +"'";  
+    	if(nhanVien != "%")
+    		sWhere += " and h.CreatedBy = '"+ nhanVien + "'";
+    	if(maCa != "%")
+    		sWhere += " and h.MaCa = '"+ maCa + "'";
     	sWhere = sWhere + " and (h.CreatedDate BETWEEN '" + formatter.format(tu)+ " 00:00:00" + "' AND '" + formatter.format(den) + " 23:59:59"+ "') ";
     	sWhere = sWhere + " ORDER BY h.CreatedDate ";
-    	sSql = "SELECT h.MaHD, h.MaBan, b.TenBan "    			
+    	sSql = "SELECT h.MaHD, h.MaBan, b.TenBan, h.NumOfCus "    			
     			+ " FROM Hoadon h "
     			+ " LEFT JOIN Ban b ON "
     			+ " h.MaBan = b.MaBan "    			
@@ -48,7 +84,8 @@ public class HoaDonDAO {
 				model.setMaHD(objects[0].toString());
 				model.setMaBan(objects[1].toString());
 				model.setTenBan(objects[2].toString());	
-				model.setTongTien(dao.GetSumBillID(objects[0].toString()));				
+				model.setTongTien(dao.GetSumBillID(objects[0].toString()));		
+				model.setNumOfCus((int)objects[3]);
 				list.add(model);
             }
             

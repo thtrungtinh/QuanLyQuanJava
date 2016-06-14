@@ -9,6 +9,7 @@ import utilities.DataService;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import org.hibernate.*;
 
@@ -18,6 +19,57 @@ import org.hibernate.transform.Transformers;
 public class ChiTietHoaDonDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();	
+	
+	/**
+     * get list danh sach truy vấn số món ăn trong thời gian
+     *
+     * @return List<ChiTietHoaDonModel>
+     */
+	public List<ChiTietHoaDonModel> GetList(Date tu, Date den, String maThucDon) {		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String sSql = "";
+    	String sWhere = " where (1=1) and c.Status = 2 ";
+    	sWhere = sWhere + " and c.SoLuong > 0";
+    	sWhere = sWhere + " and (c.CreatedDate BETWEEN '" + formatter.format(tu)+ " 00:00:00" + "' AND '" + formatter.format(den) + " 23:59:59"+ "') ";
+    	if(maThucDon != "%")
+    		sWhere += " and c.MaThucDon = '"+ maThucDon + "'";
+    	sWhere = sWhere + " ORDER BY c.CreatedDate ";
+    	sSql = "SELECT c.ID, c.MaHD, c.MaThucDon, c.GhiChu, c.SoLuong, c.Gia ,t.TenThucDon "    			
+    			+ " FROM Chitiethoadon c "
+    			+ " LEFT JOIN Thucdon t ON "
+    			+ " c.MaThucDon = t.MaThucDon "    			
+    			+ sWhere;   	
+    	        
+        List<ChiTietHoaDonModel> list = new ArrayList<>();
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			for(int i=0; i<result.size(); i++){
+				Object[] objects = (Object[]) result.get(i);
+				ChiTietHoaDonModel model = new ChiTietHoaDonModel();
+            	model.setiD((int)objects[0]);
+				model.setMaHD(objects[1].toString());
+				model.setMaThucDon(objects[2].toString());
+				model.setGhiChu(objects[3].toString());
+				model.setSoLuong((int)objects[4]);
+				model.setGia((int)objects[5]);
+				model.setTenThucDon(objects[6].toString());			
+								
+				list.add(model);
+            }
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        return list;
+	}
 	
 	/**
      * Load list danh sach 

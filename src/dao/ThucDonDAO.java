@@ -1,7 +1,9 @@
 package dao;
 
 import entities.*;
+import model.BanModel;
 import model.NguoiDungModel;
+import model.ThucDonModel;
 import utilities.DataService;
 
 import java.sql.CallableStatement;
@@ -17,6 +19,50 @@ public class ThucDonDAO {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	
+	/**
+     * Load list danh sach 
+     *
+     * style = 0 all
+     * style = 1 % tat ca
+     * @return List<BanModel>
+     */
+	
+	public List<ThucDonModel> GetList( int style)	{
+		
+		List<ThucDonModel> list = new ArrayList<>();		
+		String sSql = "";
+    	String sWhere = " where (1=1)  and Status = 1 ";
+    	
+    	sWhere = sWhere + " ORDER BY t.CreatedDate ";
+    	sSql = "SELECT t.MaThucDon, t.TenThucDon "    			
+    			+ " FROM ThucDon t "    			   			  			
+    			+ sWhere;   
+    	if(style == 1)
+    	{
+    		ThucDonModel model = new ThucDonModel("%", "Tất cả");
+    		list.add(model);
+    	}    	
+        try {
+                    	
+        	if(!(sessionFactory.getCurrentSession().getTransaction().getStatus() == TransactionStatus.ACTIVE))
+				sessionFactory.getCurrentSession().getTransaction().begin();			
+			Query query =  sessionFactory.getCurrentSession()
+                .createSQLQuery(sSql);
+			List result = query.list(); 
+			sessionFactory.getCurrentSession().getTransaction().commit();
+			for(int i=0; i<result.size(); i++){
+				Object[] entity = (Object[]) result.get(i);	
+				ThucDonModel model = new ThucDonModel(entity[0].toString(), entity[1].toString());
+	    		list.add(model);
+            }
+            
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        } finally {
+            
+        }
+        return list;	
+	}
 	
 	/**
      * Load list danh sach 

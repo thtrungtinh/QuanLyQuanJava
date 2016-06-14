@@ -200,6 +200,17 @@ private JPanel contentPane;
 		});
 		mnBoCo.add(mntmDoanhThu);
 		
+		JMenuItem mntmSLngMn = new JMenuItem("Số lượng món ăn");
+		mntmSLngMn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Mở báo cáo -> Số lượng món ăn");
+				fNumOfMenu view = new fNumOfMenu();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnBoCo.add(mntmSLngMn);
+		
 		JMenuBar menuBar_1 = new JMenuBar();
 		menuBar.add(menuBar_1);
 		contentPane = new JPanel();

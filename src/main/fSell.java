@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,6 +44,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Time;
+
 import javax.swing.SwingConstants;
 
 public class fSell extends JFrame implements ActionListener {
@@ -221,7 +224,10 @@ public class fSell extends JFrame implements ActionListener {
 		String errMessage = "";
 		keyMaHD = key;
 		Hoadon entity = new Hoadon();
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		Date currentDate = new Date();
+		String currentTime = dateFormat.format(currentDate);
+		String maCa =  dao.GetMaCa(currentTime);
 		try 
 		{						
 			entity.setMaHd(key);
@@ -233,6 +239,7 @@ public class fSell extends JFrame implements ActionListener {
 			entity.setUpdatedDate(currentDate);
 			entity.setCreatedDate(currentDate);						
 			entity.setNumOfCus(numOfCus);
+			entity.setMaCa(maCa);
 			errMessage = dao.Insert(entity);
 			
 		} 
