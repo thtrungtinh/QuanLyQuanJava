@@ -17,7 +17,7 @@ public class ChamCongModel {
 	private int ngay;
 	private int thang;
 	private int nam;
-	
+	private int luongCaTheoNgay;
 	
 	public ChamCongModel() {
 		
@@ -128,6 +128,16 @@ public class ChamCongModel {
 
 	public void setNam(int nam) {
 		this.nam = nam;
+	}
+
+
+	public int getLuongCaTheoNgay() {
+		return luongCaTheoNgay;
+	}
+
+
+	public void setLuongCaTheoNgay(int luongCaTheoNgay) {
+		this.luongCaTheoNgay = luongCaTheoNgay;
 	}
 	
 	

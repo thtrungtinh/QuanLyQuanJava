@@ -48,9 +48,9 @@ public class ChamCongDAO {
     public List<ChamCongModel> GetList(String maCa, String maNguoiDung, int nam, int thang) {
         String sSql = "";
     	String sWhere = " where (1=1) ";
-    	if(maCa != "")
+    	if(maCa != "%")
     		sWhere = sWhere + " AND c.MaCa = '" + maCa +"' ";
-    	if(maNguoiDung != "")
+    	if(maNguoiDung != "%")
     		sWhere = sWhere + " AND c.MaNguoiDung = '" + maNguoiDung +"' ";
     	if(nam != 0)
     		sWhere = sWhere + " AND c.Nam = '" + nam +"' ";
@@ -59,7 +59,7 @@ public class ChamCongDAO {
     	sWhere = sWhere + " ORDER BY c.Ngay, c.Thang, c.Nam ";
     	sSql = "SELECT c.MaChamCong, c.MaCa, c.MaNguoiDung, c.Ngay, c.Thang, c.Nam ,c.DienGiai,"
     			+ "c.CreatedBy, c.CreatedDate, c.UpdatedBy, c.UpdatedDate,"
-    			+ " ca.TenCa, n.TenNguoiDung " 
+    			+ " ca.TenCa, n.TenNguoiDung, ca.LuongCaTheoNgay " 
     			+ "FROM Chamcong c "
     			+ "LEFT JOIN Calamviec ca ON "
     			+ "c.MaCa = ca.MaCa "
@@ -93,6 +93,7 @@ public class ChamCongDAO {
 				model.setUpdatedDate((Date)objects[10]);
 				model.setTenCa(objects[11].toString());
 				model.setTenNguoiDung(objects[12].toString());
+				model.setLuongCaTheoNgay((int)objects[13]);
 				
 				list.add(model);
             }

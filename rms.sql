@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2016 at 12:06 PM
+-- Generation Time: Jun 14, 2016 at 08:19 AM
 -- Server version: 5.6.24
 -- PHP Version: 5.5.24
 
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `chitiethoadon` (
   `UpdatedDate` datetime(3) NOT NULL,
   `Stock` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `Done` tinyint(1) unsigned NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `chitiethoadon`
@@ -177,9 +177,13 @@ INSERT INTO `chitiethoadon` (`ID`, `MaHD`, `MaThucDon`, `GhiChu`, `SoLuong`, `Gi
 (27, 'HD1642016-003', 'LAU.THAI', '', 1, 300000, 0, 'lanhnguyen', '2016-05-16 11:58:03.000', 'lanhnguyen', '2016-05-16 11:58:03.000', 1, 1),
 (28, 'HD1642016-003', 'LAU.HSC', '', 1, 300000, 0, 'lanhnguyen', '2016-05-16 12:00:51.000', 'lanhnguyen', '2016-05-16 12:00:51.000', 0, 0),
 (29, 'HD1642016-004', 'LAU.THAI', '', 1, 300000, 1, 'lanhnguyen', '2016-05-16 12:02:12.000', 'lanhnguyen', '2016-05-16 12:02:12.000', 1, 1),
-(30, 'HD1542016-012', 'LAU.HSC', '', 1, 300000, 1, 'lanhnguyen', '2016-06-13 16:15:58.000', 'lanhnguyen', '2016-06-13 16:15:58.000', 1, 1),
-(31, 'HD1542016-012', 'NUOC.PEPSI', '', 1, 15000, 1, 'lanhnguyen', '2016-06-13 16:16:03.000', 'lanhnguyen', '2016-06-13 16:16:03.000', 1, 1),
-(32, 'HD1352016-001', 'NUOC.PEPSI', '', 1, 15000, 1, 'lanhnguyen', '2016-06-13 16:16:19.000', 'lanhnguyen', '2016-06-13 16:16:19.000', 1, 1);
+(30, 'HD1542016-012', 'LAU.HSC', '', 1, 300000, 2, 'lanhnguyen', '2016-06-13 16:15:58.000', 'lanhnguyen', '2016-06-13 16:15:58.000', 1, 1),
+(31, 'HD1542016-012', 'NUOC.PEPSI', '', 1, 15000, 2, 'lanhnguyen', '2016-06-13 16:16:03.000', 'lanhnguyen', '2016-06-13 16:16:03.000', 1, 1),
+(32, 'HD1352016-001', 'NUOC.PEPSI', '', 1, 15000, 2, 'lanhnguyen', '2016-06-13 16:16:19.000', 'lanhnguyen', '2016-06-13 16:16:19.000', 1, 1),
+(33, 'HD1352016-002', 'NUOC.PEPSI', '', 1, 15000, 2, 'lanhnguyen', '2016-06-14 09:36:59.000', 'lanhnguyen', '2016-06-14 09:36:59.000', 0, 0),
+(34, 'HD1452016-001', 'NUOC.PEPSI', '', 1, 15000, 2, 'lanhnguyen', '2016-06-14 10:47:20.000', 'lanhnguyen', '2016-06-14 10:47:20.000', 0, 0),
+(35, 'HD1452016-001', 'LAU.THAI', '', 1, 300000, 2, 'lanhnguyen', '2016-06-14 10:47:23.000', 'lanhnguyen', '2016-06-14 10:47:23.000', 0, 0),
+(36, 'HD1452016-001', 'LAU.HSC', '', 1, 300000, 2, 'lanhnguyen', '2016-06-14 10:47:24.000', 'lanhnguyen', '2016-06-14 10:47:24.000', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -195,33 +199,35 @@ CREATE TABLE IF NOT EXISTS `hoadon` (
   `CreatedDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `UpdatedBy` varchar(50) NOT NULL,
   `UpdatedDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `NumOfCus` int(11) NOT NULL DEFAULT '1'
+  `NumOfCus` int(11) NOT NULL DEFAULT '1',
+  `MaCa` varchar(45) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `hoadon`
 --
 
-INSERT INTO `hoadon` (`MaHD`, `Maban`, `Status`, `CreatedBy`, `CreatedDate`, `UpdatedBy`, `UpdatedDate`, `NumOfCus`) VALUES
-('HD1352016-001', 'B.03', 1, 'lanhnguyen', '2016-06-13 16:15:51', 'lanhnguyen', '2016-06-13 16:15:51', 1),
-('HD1352016-002', 'B.07', 1, 'lanhnguyen', '2016-06-13 16:56:24', 'lanhnguyen', '2016-06-13 16:56:24', 10),
-('HD1542016-001', 'B.01', 0, 'lanhnguyen', '2016-05-15 16:25:08', 'lanhnguyen', '2016-05-15 21:13:53', 1),
-('HD1542016-002', 'B.06', 0, 'lanhnguyen', '2016-05-15 16:25:10', 'lanhnguyen', '2016-05-15 21:51:04', 1),
-('HD1542016-003', 'B.08', 0, 'lanhnguyen', '2016-05-15 16:25:12', 'lanhnguyen', '2016-05-15 21:51:01', 1),
-('HD1542016-004', 'B.03', 0, 'lanhnguyen', '2016-05-15 16:25:14', 'lanhnguyen', '2016-05-15 21:52:54', 1),
-('HD1542016-005', 'B.02', 0, 'lanhnguyen', '2016-05-15 16:25:16', 'lanhnguyen', '2016-05-15 21:51:06', 1),
-('HD1542016-006', 'B.04', 0, 'lanhnguyen', '2016-05-15 16:25:18', 'lanhnguyen', '2016-05-15 20:33:04', 1),
-('HD1542016-007', 'B.07', 0, 'lanhnguyen', '2016-05-15 16:25:20', 'lanhnguyen', '2016-05-15 21:51:03', 1),
-('HD1542016-008', 'B.04', 0, 'lanhnguyen', '2016-05-15 20:35:23', 'lanhnguyen', '2016-05-15 20:35:36', 1),
-('HD1542016-009', 'B.04', 0, 'lanhnguyen', '2016-05-15 20:37:43', 'lanhnguyen', '2016-05-15 20:37:51', 1),
-('HD1542016-010', 'B.04', 0, 'lanhnguyen', '2016-05-15 21:06:57', 'lanhnguyen', '2016-05-15 21:13:14', 1),
-('HD1542016-011', 'B.04', 2, 'lanhnguyen', '2016-05-15 21:16:12', 'lanhnguyen', '2016-05-15 21:52:18', 1),
-('HD1542016-012', 'B.04', 1, 'lanhnguyen', '2016-05-15 22:01:42', 'lanhnguyen', '2016-05-15 22:01:42', 1),
-('HD1542016-013', 'B.03', 0, 'lanhnguyen', '2016-05-15 22:16:57', 'lanhnguyen', '2016-05-16 11:54:57', 1),
-('HD1642016-001', 'B.06', 0, 'lanhnguyen', '2016-05-16 09:12:20', 'lanhnguyen', '2016-05-16 11:53:36', 1),
-('HD1642016-002', 'B.03', 0, 'lanhnguyen', '2016-05-16 11:55:37', 'lanhnguyen', '2016-05-16 11:57:15', 1),
-('HD1642016-003', 'B.02', 0, 'lanhnguyen', '2016-05-16 11:57:17', 'lanhnguyen', '2016-05-16 12:02:08', 1),
-('HD1642016-004', 'B.02', 2, 'lanhnguyen', '2016-05-16 12:02:10', 'lanhnguyen', '2016-05-16 13:03:51', 1);
+INSERT INTO `hoadon` (`MaHD`, `Maban`, `Status`, `CreatedBy`, `CreatedDate`, `UpdatedBy`, `UpdatedDate`, `NumOfCus`, `MaCa`) VALUES
+('HD1352016-001', 'B.03', 2, 'lanhnguyen', '2016-06-13 16:15:51', 'lanhnguyen', '2016-06-14 09:36:53', 1, ''),
+('HD1352016-002', 'B.07', 2, 'lanhnguyen', '2016-06-13 16:56:24', 'lanhnguyen', '2016-06-14 09:37:01', 10, ''),
+('HD1452016-001', 'B.06', 2, 'lanhnguyen', '2016-06-14 10:47:12', 'lanhnguyen', '2016-06-14 10:47:28', 15, 'SA'),
+('HD1542016-001', 'B.01', 0, 'lanhnguyen', '2016-05-15 16:25:08', 'lanhnguyen', '2016-05-15 21:13:53', 1, ''),
+('HD1542016-002', 'B.06', 0, 'lanhnguyen', '2016-05-15 16:25:10', 'lanhnguyen', '2016-05-15 21:51:04', 1, ''),
+('HD1542016-003', 'B.08', 0, 'lanhnguyen', '2016-05-15 16:25:12', 'lanhnguyen', '2016-05-15 21:51:01', 1, ''),
+('HD1542016-004', 'B.03', 0, 'lanhnguyen', '2016-05-15 16:25:14', 'lanhnguyen', '2016-05-15 21:52:54', 1, ''),
+('HD1542016-005', 'B.02', 0, 'lanhnguyen', '2016-05-15 16:25:16', 'lanhnguyen', '2016-05-15 21:51:06', 1, ''),
+('HD1542016-006', 'B.04', 0, 'lanhnguyen', '2016-05-15 16:25:18', 'lanhnguyen', '2016-05-15 20:33:04', 1, ''),
+('HD1542016-007', 'B.07', 0, 'lanhnguyen', '2016-05-15 16:25:20', 'lanhnguyen', '2016-05-15 21:51:03', 1, ''),
+('HD1542016-008', 'B.04', 0, 'lanhnguyen', '2016-05-15 20:35:23', 'lanhnguyen', '2016-05-15 20:35:36', 1, ''),
+('HD1542016-009', 'B.04', 0, 'lanhnguyen', '2016-05-15 20:37:43', 'lanhnguyen', '2016-05-15 20:37:51', 1, ''),
+('HD1542016-010', 'B.04', 0, 'lanhnguyen', '2016-05-15 21:06:57', 'lanhnguyen', '2016-05-15 21:13:14', 1, ''),
+('HD1542016-011', 'B.04', 2, 'lanhnguyen', '2016-05-15 21:16:12', 'lanhnguyen', '2016-05-15 21:52:18', 1, ''),
+('HD1542016-012', 'B.04', 2, 'lanhnguyen', '2016-05-15 22:01:42', 'lanhnguyen', '2016-06-14 09:36:51', 1, ''),
+('HD1542016-013', 'B.03', 0, 'lanhnguyen', '2016-05-15 22:16:57', 'lanhnguyen', '2016-05-16 11:54:57', 1, ''),
+('HD1642016-001', 'B.06', 0, 'lanhnguyen', '2016-05-16 09:12:20', 'lanhnguyen', '2016-05-16 11:53:36', 1, ''),
+('HD1642016-002', 'B.03', 0, 'lanhnguyen', '2016-05-16 11:55:37', 'lanhnguyen', '2016-05-16 11:57:15', 1, ''),
+('HD1642016-003', 'B.02', 0, 'lanhnguyen', '2016-05-16 11:57:17', 'lanhnguyen', '2016-05-16 12:02:08', 1, ''),
+('HD1642016-004', 'B.02', 2, 'lanhnguyen', '2016-05-16 12:02:10', 'lanhnguyen', '2016-05-16 13:03:51', 1, '');
 
 -- --------------------------------------------------------
 
@@ -475,7 +481,7 @@ ALTER TABLE `chamcong`
 -- AUTO_INCREMENT for table `chitiethoadon`
 --
 ALTER TABLE `chitiethoadon`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

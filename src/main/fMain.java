@@ -211,6 +211,17 @@ private JPanel contentPane;
 		});
 		mnBoCo.add(mntmSLngMn);
 		
+		JMenuItem mntmTnhLngNhn = new JMenuItem("Tính lương nhân viên");
+		mntmTnhLngNhn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Mở báo cáo -> Tính lương nhân viên");
+				fReportTimeKeeping view = new fReportTimeKeeping();	
+				view.setLocationRelativeTo(null);
+				view.setVisible(true);
+			}
+		});
+		mnBoCo.add(mntmTnhLngNhn);
+		
 		JMenuBar menuBar_1 = new JMenuBar();
 		menuBar.add(menuBar_1);
 		contentPane = new JPanel();
